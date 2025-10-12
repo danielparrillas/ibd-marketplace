@@ -19,9 +19,9 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'user_type',
     ];
 
     /**
@@ -46,4 +46,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // En User.php
+public function customer()
+{
+    return $this->hasOne(Customer::class, 'user_id');
+}
+
+public function restaurant()
+{
+    return $this->hasOne(Restaurant::class, 'user_id');
+}
+
 }

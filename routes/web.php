@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\RestaurantController;
+use App\Models\Customer;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,8 +13,11 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        return  Inertia::render('dashboard');
     })->name('dashboard');
+    Route::resource('/customer', CustomerController::class)-> names('customer');
+    Route::resource('/restaurant', RestaurantController::class)-> names('restaurant');
+
 });
 
 require __DIR__.'/settings.php';

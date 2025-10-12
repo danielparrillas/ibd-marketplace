@@ -29,25 +29,79 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    // Validar campos comunes
+    $request->validate([
+        'user_type' => 'required|string|in:customer,restaurant',
+        'email' => 'required|string|email|max:255|unique:users,email',
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
+    // Validaciones específicas según user_type
+    if ($request->user_type === 'customer') {
+        $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'birth_date' => 'nullable|date',
+        ]);
+    }
+
+    if ($request->user_type === 'restaurant') {
+        $request->validate([
+            'business_name' => 'required|string|max:255',
+            'legal_name' => 'nullable|string|max:255',
+            'phone' => 'required|string|max:20',
+            'legal_document' => 'nullable|string|max:100',
+            'business_license' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'logo_url' => 'nullable|url|max:500',
+        ]);
+    }
+
+    // Usar transacción para mantener integridad
+    \DB::transaction(function () use ($request) {
+        // Crear usuario base
         $user = User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_type' => $request->user_type,
         ]);
 
+        // Crear perfil cliente o restaurante según user_type
+        if ($request->user_type === 'customer') {
+            $user->customer()->create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+            ]);
+        }
+
+        if ($request->user_type === 'restaurant') {
+            $user->restaurant()->create([
+                'business_name' => $request->business_name,
+                'legal_name' => $request->legal_name,
+                'phone' => $request->phone,
+                'legal_document' => $request->legal_document,
+                'business_license' => $request->business_license,
+                'description' => $request->description,
+                'logo_url' => $request->logo_url,
+            ]);
+        }
+
+        // Evento de registro
         event(new Registered($user));
 
+        // Login del usuario
         Auth::login($user);
 
+        // Regenerar sesión
         $request->session()->regenerate();
+    });
 
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+    // Redireccionar al dashboard
+    return redirect()->intended(route('dashboard', absolute: false));
+}
+
 }
