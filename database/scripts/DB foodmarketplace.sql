@@ -25,6 +25,18 @@ CREATE TABLE sessions (
     last_activity INT NOT NULL
 );
 
+CREATE TABLE cache (
+    [key] NVARCHAR(255) NOT NULL PRIMARY KEY,
+    [value] NVARCHAR(MAX) NOT NULL,
+    [expiration] INT NOT NULL
+);
+
+CREATE TABLE cache_locks (
+    [key] NVARCHAR(255) NOT NULL PRIMARY KEY,
+    [owner] NVARCHAR(255) NOT NULL,
+    [expiration] INT NOT NULL
+);
+
 -- Tabla customers
 CREATE TABLE customers (
     id INT IDENTITY(1,1) PRIMARY KEY,
