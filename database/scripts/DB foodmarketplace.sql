@@ -3,8 +3,6 @@ GO
 USE foodmarketplace
 GO
 
-
-
 -- Tabla: cache
 CREATE TABLE [dbo].[cache](
 	[key] [nvarchar](255) NOT NULL PRIMARY KEY,
@@ -130,6 +128,7 @@ CREATE TABLE customers (
 CREATE TABLE restaurants (
     id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
+	responsible_name VARCHAR(255) NOT NULL,
     business_name VARCHAR(255) NOT NULL,
     legal_name VARCHAR(255) NULL,
     phone VARCHAR(20) NOT NULL,

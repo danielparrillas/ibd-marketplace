@@ -16,8 +16,7 @@ class Restaurant extends Model
         'business_license',
         'description',
         'logo_url',
-        //'created_at',
-        //'updated_at'
+        'responsible_name',
     ];
     public $timestamps = true;
 

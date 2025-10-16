@@ -1,10 +1,10 @@
 -- Tabla users
-INSERT INTO users (email, password, user_type, email_verified_at) VALUES
-('cliente1@correo.com','pwd1','customer',NULL),
-('cliente2@correo.com','pwd2','customer',NULL),
-('rest1@correo.com','pwd3','restaurant',GETDATE()),
-('admin@correo.com','pwd4','admin',GETDATE()),
-('rest2@correo.com','pwd5','restaurant',GETDATE());
+INSERT INTO users (name, email, password, user_type, email_verified_at) VALUES
+('Juan Perez1','cliente1@correo.com','$2y$12$oT1rlLnrJjtSyKuyeC62WeGYj5nXsjif8TNP5UgfsxPLmza8n5giO','customer',NULL), --contraseña: Admin12.
+('Juan Perez2','cliente2@correo.com','$2y$12$oT1rlLnrJjtSyKuyeC62WeGYj5nXsjif8TNP5UgfsxPLmza8n5giO','customer',NULL), --contraseña: Admin12.
+('Juan Perez3','rest1@correo.com','$2y$12$oT1rlLnrJjtSyKuyeC62WeGYj5nXsjif8TNP5UgfsxPLmza8n5giO','restaurant',GETDATE()), --contraseña: Admin12.
+('Juan Perez4','admin@correo.com','$2y$12$oT1rlLnrJjtSyKuyeC62WeGYj5nXsjif8TNP5UgfsxPLmza8n5giO','admin',GETDATE()), --contraseña: Admin12.
+('Juan Perez5','rest2@correo.com','$2y$12$oT1rlLnrJjtSyKuyeC62WeGYj5nXsjif8TNP5UgfsxPLmza8n5giO','restaurant',GETDATE()); --contraseña: Admin12.
 
 -- Tabla sessions
 INSERT INTO sessions (id, user_id, ip_address, user_agent, payload, last_activity) VALUES
@@ -23,12 +23,12 @@ INSERT INTO customers (user_id, first_name, last_name, phone, birth_date) VALUES
 (3, 'Otro', 'Cliente', NULL, NULL);
 
 -- Tabla restaurants
-INSERT INTO restaurants (user_id, business_name, legal_name, phone) VALUES
-(1, 'Taquería México', 'Taquería México S.A. de C.V.', '5598765432'),
-(2, 'Pizzería Luigi', 'Luigi Pizza', '5598761234'),
-(3, 'Tortas Jimmy', NULL, '5588451122'),
-(4, 'Sushi House', NULL, '5544789000'),
-(5, 'Bar El Pintor', NULL, '5598877665');
+INSERT INTO restaurants (user_id, responsible_name, business_name, legal_name, phone) VALUES
+(1, 'Juan Perez1', 'Taquería México', 'Taquería México S.A. de C.V.', '5598765432'),
+(2, 'Juan Perez2', 'Pizzería Luigi', 'Luigi Pizza', '5598761234'),
+(3, 'Juan Perez3', 'Tortas Jimmy', NULL, '5588451122'),
+(4, 'Juan Perez4', 'Sushi House', NULL, '5544789000'),
+(5, 'Juan Perez5', 'Bar El Pintor', NULL, '5598877665');
 
 -- Tabla addresses
 INSERT INTO addresses (user_id, address_line_1, latitude, longitude) VALUES
