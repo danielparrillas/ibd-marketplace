@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Models\Customer;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +21,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/restaurant', RestaurantController::class)-> names('restaurant');
 
 });
+Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
+
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
+
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+
+Route::post('reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.store');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
