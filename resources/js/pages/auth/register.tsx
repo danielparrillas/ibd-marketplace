@@ -168,6 +168,22 @@ export default function Register() {
                   </div>
 
                   <div className="grid gap-2">
+
+                    {/* nuevo campo */}
+                  <Label htmlFor="responsible_name">Nombre del responsable</Label>
+                  <Input
+                    id="responsible_name"
+                    type="text"
+                    tabIndex={12}
+                    name="responsible_name"
+                    placeholder="Nombre del responsable"
+                    required
+                  />
+                  <InputError message={errors.responsible_name} />
+                </div>
+                   {/* fin nuevo campo */}
+
+                  <div className="grid gap-2">
                     <Label htmlFor="legal_name">Razón social del restaurante</Label>
                     <Input
                       id="legal_name"
@@ -247,7 +263,7 @@ export default function Register() {
                 <Button
                   type="submit"
                   className="mt-2 w-full"
-                  tabIndex={12}
+                  tabIndex={13}
                   data-test="register-user-button"
                   disabled={processing}
                 >
