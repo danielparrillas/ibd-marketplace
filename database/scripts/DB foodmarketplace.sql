@@ -3,40 +3,114 @@ GO
 USE foodmarketplace
 GO
 
-	-- Tabla users
-CREATE TABLE users (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('customer', 'restaurant', 'admin')),
-    email_verified_at DATETIME NULL,
-    created_at DATETIME NOT NULL DEFAULT GETDATE(),
-    updated_at DATETIME NOT NULL DEFAULT GETDATE(),
-    is_active BIT NOT NULL DEFAULT 1
-);
+-- Tabla: cache
+CREATE TABLE [dbo].[cache](
+	[key] [nvarchar](255) NOT NULL PRIMARY KEY,
+	[value] [nvarchar](max) NOT NULL,
+	[expiration] [int] NOT NULL
+)
+GO
 
--- Tabla sessions
-CREATE TABLE sessions (
-    id VARCHAR(255) PRIMARY KEY,
-    user_id INT NULL,
-    ip_address VARCHAR(45) NULL,
-    user_agent TEXT NULL,
-    payload TEXT NOT NULL,
-    last_activity INT NOT NULL
-);
+-- Tabla: cache_locks
+CREATE TABLE [dbo].[cache_locks](
+	[key] [nvarchar](255) NOT NULL PRIMARY KEY,
+	[owner] [nvarchar](255) NOT NULL,
+	[expiration] [int] NOT NULL
+)
+GO
 
-CREATE TABLE cache (
-    [key] NVARCHAR(255) NOT NULL PRIMARY KEY,
-    [value] NVARCHAR(MAX) NOT NULL,
-    [expiration] INT NOT NULL
-);
+-- Tabla: failed_jobs
+CREATE TABLE [dbo].[failed_jobs](
+	[id] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[uuid] [nvarchar](255) NOT NULL UNIQUE,
+	[connection] [nvarchar](max) NOT NULL,
+	[queue] [nvarchar](max) NOT NULL,
+	[payload] [nvarchar](max) NOT NULL,
+	[exception] [nvarchar](max) NOT NULL,
+	[failed_at] [datetime] NOT NULL DEFAULT (getdate())
+)
+GO
 
-CREATE TABLE cache_locks (
-    [key] NVARCHAR(255) NOT NULL PRIMARY KEY,
-    [owner] NVARCHAR(255) NOT NULL,
-    [expiration] INT NOT NULL
-);
+-- Tabla: job_batches
+CREATE TABLE [dbo].[job_batches](
+	[id] [nvarchar](255) NOT NULL PRIMARY KEY,
+	[name] [nvarchar](255) NOT NULL,
+	[total_jobs] [int] NOT NULL,
+	[pending_jobs] [int] NOT NULL,
+	[failed_jobs] [int] NOT NULL,
+	[failed_job_ids] [nvarchar](max) NOT NULL,
+	[options] [nvarchar](max) NULL,
+	[cancelled_at] [int] NULL,
+	[created_at] [int] NOT NULL,
+	[finished_at] [int] NULL
+)
+GO
+
+-- Tabla: jobs
+CREATE TABLE [dbo].[jobs](
+	[id] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[queue] [nvarchar](255) NOT NULL,
+	[payload] [nvarchar](max) NOT NULL,
+	[attempts] [tinyint] NOT NULL,
+	[reserved_at] [int] NULL,
+	[available_at] [int] NOT NULL,
+	[created_at] [int] NOT NULL
+)
+GO
+
+CREATE INDEX [jobs_queue_index] ON [dbo].[jobs]([queue])
+GO
+
+-- Tabla: migrations
+CREATE TABLE [dbo].[migrations](
+	[id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[migration] [nvarchar](255) NOT NULL,
+	[batch] [int] NOT NULL
+)
+GO
+
+-- Tabla: password_reset_tokens
+CREATE TABLE [dbo].[password_reset_tokens](
+	[email] [nvarchar](255) NOT NULL PRIMARY KEY,
+	[token] [nvarchar](255) NOT NULL,
+	[created_at] [datetime] NULL
+)
+GO
+
+-- Tabla: sessions
+CREATE TABLE [dbo].[sessions](
+	[id] [nvarchar](255) NOT NULL PRIMARY KEY,
+	[user_id] INT NULL,
+	[ip_address] [nvarchar](45) NULL,
+	[user_agent] [nvarchar](max) NULL,
+	[payload] [nvarchar](max) NOT NULL,
+	[last_activity] [int] NOT NULL
+)
+GO
+
+CREATE INDEX [sessions_user_id_index] ON [dbo].[sessions]([user_id])
+GO
+
+CREATE INDEX [sessions_last_activity_index] ON [dbo].[sessions]([last_activity])
+GO
+
+
+-- Tabla: users
+CREATE TABLE [dbo].[users](
+	[id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[name] [nvarchar](255) NOT NULL,
+	[email] [nvarchar](255) NOT NULL UNIQUE,
+    [user_type] VARCHAR(20) NOT NULL CHECK (user_type IN ('customer', 'restaurant', 'admin')),
+	[email_verified_at] [datetime] NULL,
+	[password] [nvarchar](255) NOT NULL,
+	[remember_token] [nvarchar](100) NULL,
+	[created_at] [datetime] NULL,
+	[updated_at] [datetime] NULL,
+	[two_factor_secret] [nvarchar](max) NULL,
+	[two_factor_recovery_codes] [nvarchar](max) NULL,
+	[two_factor_confirmed_at] [datetime] NULL
+)
+GO
 
 CREATE TABLE password_reset_tokens (
     email VARCHAR(255) NOT NULL PRIMARY KEY,
