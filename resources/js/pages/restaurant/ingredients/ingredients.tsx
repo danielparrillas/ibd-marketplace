@@ -17,9 +17,11 @@ import { type BreadcrumbItem } from '@/types';
 import { IngredientTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Pencil, Plus } from 'lucide-react';
+import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import DeleteIngredient from './delete-ingredient';
 import EditIngredient from './edit-ingredient';
 import {
+    setIngredientToDelete,
     setIngredientToEdit,
     setOpenStoreIngredient,
 } from './ingredientsStore';
@@ -68,6 +70,7 @@ export default function Ingredientes() {
             </div>
             <StoreIngredient />
             <EditIngredient />
+            <DeleteIngredient />
         </AppLayout>
     );
 }
@@ -94,6 +97,15 @@ function ActionCell(props: { ingredient: IngredientTable }) {
                         Editar
                         <DropdownMenuShortcut>
                             <Pencil />
+                        </DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setIngredientToDelete(ingredient)}
+                        className="text-destructive focus:text-destructive"
+                    >
+                        Eliminar
+                        <DropdownMenuShortcut>
+                            <Trash2 />
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>

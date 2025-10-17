@@ -112,7 +112,20 @@ class IngredientController extends Controller
 
 	public function destroy(string $id)
 	{
-		return 'destroy';
+		$userId = Auth::id();
+		$restaurantId = Restaurant::where('user_id', $userId)->value('id');
+
+		if (!$restaurantId) {
+			return back()->withErrors(['restaurant' => 'No se encontró un restaurante asociado al usuario.']);
+		}
+
+		$ingredient = Ingredient::where('id', $id)
+			->where('restaurant_id', $restaurantId)
+			->firstOrFail();
+
+		$ingredient->delete();
+
+		return back()->with('success', 'Ingrediente eliminado exitosamente.');
 	}
 
 	public function search(Request $request)
