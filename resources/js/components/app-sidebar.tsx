@@ -14,7 +14,12 @@ import { dashboard } from '@/routes';
 import ingredients from '@/routes/ingredients';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Building2, LayoutGrid, ShoppingBasket } from 'lucide-react';
+import {
+    Building2,
+    HandPlatter,
+    LayoutGrid,
+    ShoppingBasket,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -43,6 +48,11 @@ export function AppSidebar() {
             title: 'Ingredientes',
             href: ingredients.index(),
             icon: ShoppingBasket,
+        });
+        navItems.push({
+            title: 'Platillos',
+            href: ingredients.index().url.replace('ingredients', 'dishes'),
+            icon: HandPlatter,
         });
     }
 
