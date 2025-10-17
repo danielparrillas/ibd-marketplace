@@ -139,5 +139,22 @@
 
     body {
         @apply bg-background text-foreground;
+        -webkit-print-color-adjust: exact;
+    }
+
+    select:has(option:checked[value=""]) {
+        color: var(--color-muted-foreground);
+        font-style: italic;
+    }
+
+    option {
+        background: var(--muted);
+        color: var(--color-foreground);
+        font-style: normal;
+    }
+
+    option[value=""] {
+        color: var(--color-muted-foreground);
+        font-style: italic;
     }
 }
