@@ -13,6 +13,7 @@ class IngredientController extends Controller
 	{
 		$userId = Auth::id();
 		$restaurantId = Restaurant::where('user_id', $userId)->value('id');
+		$success = session('success');
 
 		if (!$restaurantId) {
 			return back()->withErrors(['restaurant' => 'No se encontró un restaurante asociado al usuario.']);
@@ -22,11 +23,13 @@ class IngredientController extends Controller
 
 		return inertia('restaurant/ingredients/ingredients', [
 			'ingredients' => $ingredients,
+			'success' => $success,
 		]);
 	}
 
 	public function create()
 	{
+		// No hay una vista separada para crear ingredientes; el formulario está en la vista de índice.
 		return 'create';
 	}
 
@@ -66,11 +69,13 @@ class IngredientController extends Controller
 
 	public function show(string $id)
 	{
+		// No hay una vista separada para mostrar un ingrediente; la funcionalidad no está implementada.
 		return 'show';
 	}
 
 	public function edit(string $id)
 	{
+		// No hay una vista separada para editar ingredientes; el formulario está en la vista de índice.
 		return 'edit';
 	}
 
@@ -128,8 +133,8 @@ class IngredientController extends Controller
 		return back()->with('success', 'Ingrediente eliminado exitosamente.');
 	}
 
-	public function search(Request $request)
+	public function get(Request $request)
 	{
-		return 'search';
+		return response()->json(Ingredient::all());
 	}
 }

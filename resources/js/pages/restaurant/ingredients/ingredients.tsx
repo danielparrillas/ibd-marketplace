@@ -18,6 +18,8 @@ import { IngredientTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import DeleteIngredient from './delete-ingredient';
 import EditIngredient from './edit-ingredient';
 import {
@@ -43,7 +45,18 @@ type Props = {
 };
 
 export default function Ingredientes() {
-    const ingredients = usePage<Props>().props.ingredients;
+    const data = usePage<Props>().props.ingredients;
+    const success = usePage<Props>().props.success as string | undefined;
+
+    console.log('Success message:', success);
+
+    useEffect(() => {
+        if (success) {
+            // Aquí puedes implementar la lógica para mostrar una notificación o alerta
+            toast.success(success);
+        }
+    }, [success]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Ingredientes" />
@@ -51,7 +64,7 @@ export default function Ingredientes() {
                 <DataTable
                     filterBy="Nombre"
                     columns={columns}
-                    data={ingredients}
+                    data={data}
                     calcTotals={false}
                     initialColumnVisibility={{
                         'Fecha de Creación': false,
