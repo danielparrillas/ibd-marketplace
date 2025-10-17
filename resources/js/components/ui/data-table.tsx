@@ -232,7 +232,7 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className='hover:bg-background data-[state=selected]:bg-background'>
                 <TableCell colSpan={columns.length} className="p-0 text-center">
                   {noDataContent || <div className="p-8">Sin datos.</div>}
                 </TableCell>
