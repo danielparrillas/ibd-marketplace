@@ -1,5 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { DataTable, DataTableColumnHeader } from '@/components/ui/data-table';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import ingredients from '@/routes/ingredients';
@@ -7,8 +17,12 @@ import { type BreadcrumbItem } from '@/types';
 import { IngredientTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus } from 'lucide-react';
-import { setOpenStoreIngredient } from './ingredientsStore';
+import { EllipsisVertical, Pencil, Plus } from 'lucide-react';
+import EditIngredient from './edit-ingredient';
+import {
+    setIngredientToEdit,
+    setOpenStoreIngredient,
+} from './ingredientsStore';
 import StoreIngredient from './store-ingredient';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -53,11 +67,46 @@ export default function Ingredientes() {
                 />
             </div>
             <StoreIngredient />
+            <EditIngredient />
         </AppLayout>
     );
 }
 
+function ActionCell(props: { ingredient: IngredientTable }) {
+    const {
+        ingredient,
+        ingredient: { name },
+    } = props;
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                    <EllipsisVertical />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="start">
+                <DropdownMenuLabel>Opciones para {name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    <DropdownMenuItem
+                        onClick={() => setIngredientToEdit(ingredient)}
+                    >
+                        Editar
+                        <DropdownMenuShortcut>
+                            <Pencil />
+                        </DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
 const columns: ColumnDef<IngredientTable>[] = [
+    {
+        id: 'Acciones',
+        cell: ({ row }) => <ActionCell ingredient={row.original} />,
+    },
     {
         id: 'Nombre',
         accessorKey: 'name',

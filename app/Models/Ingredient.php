@@ -23,8 +23,8 @@ class Ingredient extends Model
 	];
 
 	protected $casts = [
-		'current_stock' => 'decimal:3',
-		'min_stock_alert' => 'decimal:3',
+		'current_stock' => 'float',
+		'min_stock_alert' => 'float',
 		'unit_cost' => 'decimal:2',
 	];
 
