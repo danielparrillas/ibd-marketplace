@@ -26,9 +26,6 @@ class Ingredient extends Model
 		'current_stock' => 'decimal:3',
 		'min_stock_alert' => 'decimal:3',
 		'unit_cost' => 'decimal:2',
-		'expiration_date' => 'date',
-		'created_at' => 'datetime',
-		'updated_at' => 'datetime',
 	];
 
 	public function restaurant(): BelongsTo

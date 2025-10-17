@@ -20,14 +20,14 @@ class IngredientController extends Controller
 
 		$ingredients = Ingredient::where('restaurant_id', $restaurantId)->get();
 
-		return inertia('Ingredient/Index', [
+		return inertia('restaurant/ingredients/ingredients', [
 			'ingredients' => $ingredients,
 		]);
 	}
 
 	public function create()
 	{
-		//
+		return 'create';
 	}
 
 	public function store(Request $request)
@@ -66,26 +66,26 @@ class IngredientController extends Controller
 
 	public function show(string $id)
 	{
-		//
+		return 'show';
 	}
 
 	public function edit(string $id)
 	{
-		//
+		return 'edit';
 	}
 
 	public function update(Request $request, string $id)
 	{
-		//
+		return 'update';
 	}
 
 	public function destroy(string $id)
 	{
-		//
+		return 'destroy';
 	}
 
 	public function search(Request $request)
 	{
-		//
+		return 'search';
 	}
 }

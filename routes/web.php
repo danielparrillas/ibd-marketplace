@@ -22,20 +22,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::resource('/restaurant', RestaurantController::class)->names('restaurant');
 });
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-    ->name('password.request');
+	->name('password.request');
 
 Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-    ->name('password.email');
+	->name('password.email');
 
 Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-    ->name('password.reset');
+	->name('password.reset');
 
 Route::post('reset-password', [NewPasswordController::class, 'store'])
-    ->name('password.store');
+	->name('password.store');
 
-Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
-	Route::resource('/ingredient', IngredientController::class)->names('ingredient');
-});
+Route::resource('/ingredients', IngredientController::class)->names('ingredients');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

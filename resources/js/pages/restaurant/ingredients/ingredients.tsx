@@ -1,0 +1,118 @@
+import { Button } from '@/components/ui/button';
+import { DataTable, DataTableColumnHeader } from '@/components/ui/data-table';
+import AppLayout from '@/layouts/app-layout';
+import { dashboard } from '@/routes';
+import ingredients from '@/routes/ingredients';
+import { type BreadcrumbItem } from '@/types';
+import { IngredientTable } from '@/types/tables';
+import { Head, usePage } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
+import { setOpenStoreIngredient } from './ingredientsStore';
+import StoreIngredient from './store-ingredient';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: dashboard().url,
+    },
+    {
+        title: 'Ingredientes',
+        href: ingredients.index().url,
+    },
+];
+
+type Props = {
+    ingredients: IngredientTable[];
+};
+
+export default function Ingredientes() {
+    const ingredients = usePage<Props>().props.ingredients;
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Ingredientes" />
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <DataTable
+                    filterBy="Nombre"
+                    columns={columns}
+                    data={ingredients}
+                    calcTotals={false}
+                    initialColumnVisibility={{
+                        'Fecha de Creación': false,
+                        'Fecha de Actualización': false,
+                    }}
+                    headerContent={
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setOpenStoreIngredient(true)}
+                        >
+                            <Plus />
+                        </Button>
+                    }
+                />
+            </div>
+            <StoreIngredient />
+        </AppLayout>
+    );
+}
+
+const columns: ColumnDef<IngredientTable>[] = [
+    {
+        id: 'Nombre',
+        accessorKey: 'name',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Unidad de Medida',
+        accessorKey: 'unit_measure',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Stock Actual',
+        accessorKey: 'current_stock',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Alerta de Stock Mínimo',
+        accessorKey: 'min_stock_alert',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Costo Unitario',
+        accessorKey: 'unit_cost',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Proveedor',
+        accessorKey: 'supplier',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Fecha de Expiración',
+        accessorKey: 'expiration_date',
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Días para Expirar',
+        accessorFn: (row) => {
+            if (!row.expiration_date) return 'N/A';
+            const today = new Date();
+            const expirationDate = new Date(row.expiration_date);
+            const diffTime = expirationDate.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays >= 0 ? diffDays : 'Expirado';
+        },
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Fecha de Creación',
+        accessorFn: (row) => new Date(row.created_at).toLocaleString(),
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Fecha de Actualización',
+        accessorFn: (row) => new Date(row.updated_at).toLocaleString(),
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+];
