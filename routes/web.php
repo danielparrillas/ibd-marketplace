@@ -5,6 +5,7 @@ use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\DishController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -32,6 +33,8 @@ Route::post('reset-password', [NewPasswordController::class, 'store'])
 	->name('password.store');
 
 Route::resource('/ingredients', IngredientController::class)->names('ingredients');
+
+Route::resource('/dishes', DishController::class)->names('dishes');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
