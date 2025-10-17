@@ -5,8 +5,6 @@ use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
-use App\Models\Customer;
-use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

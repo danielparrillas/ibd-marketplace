@@ -48,8 +48,6 @@ export default function Ingredientes() {
     const data = usePage<Props>().props.ingredients;
     const success = usePage<Props>().props.success as string | undefined;
 
-    console.log('Success message:', success);
-
     useEffect(() => {
         if (success) {
             // Aquí puedes implementar la lógica para mostrar una notificación o alerta
