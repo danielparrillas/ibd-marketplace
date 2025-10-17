@@ -41,10 +41,7 @@ export default function Dishes() {
     const success = usePage<Props>().props.success as string | undefined;
 
     useEffect(() => {
-        if (success) {
-            // Aquí puedes implementar la lógica para mostrar una notificación o alerta
-            toast.success(success);
-        }
+        if (success) toast.success(success);
     }, [success]);
 
     return (
