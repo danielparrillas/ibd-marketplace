@@ -19,7 +19,9 @@ import { DishTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
+import DeleteDish from './delete-dish';
 import {
+    setDishToDelete,
     setDishToEdit,
     setDishToUploadImage,
     setOpenStoreDish,
@@ -77,6 +79,7 @@ export default function Dishes() {
             </div>
             <ImageDish />
             <EditDish />
+            <DeleteDish />
         </AppLayout>
     );
 }
@@ -112,7 +115,7 @@ function ActionCell(props: { dish: DishTable }) {
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        // onClick={() => setDishToDelete(dish)}
+                        onClick={() => setDishToDelete(dish)}
                         className="text-destructive focus:text-destructive"
                     >
                         Eliminar

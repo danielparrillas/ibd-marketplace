@@ -152,7 +152,26 @@ class DishController extends Controller
 			->where('restaurant_id', $restaurantId)
 			->firstOrFail();
 
+		$imagePath = $dish->image_url;
+
+		// Verificar si el platillo está asociado a algún pedido antes de eliminar
+		$hasOrders = $dish->orderItems()->exists();
+		if ($hasOrders) {
+			return back()->withErrors(['dish' => 'No se puede eliminar el platillo porque está asociado a pedidos existentes.']);
+		}
+
+		// Verificar si el platillo está asociado a algún combo antes de eliminar
+		$hasCombos = $dish->combos()->exists();
+		if ($hasCombos) {
+			return back()->withErrors(['dish' => 'No se puede eliminar el platillo porque está asociado a combos existentes.']);
+		}
+
 		$dish->delete();
+
+		// Eliminar imagen asociada si existe
+		if ($imagePath && file_exists(public_path($imagePath))) {
+			unlink(public_path($imagePath));
+		}
 
 		return back()->with('success', 'Platillo eliminado exitosamente.');
 	}
