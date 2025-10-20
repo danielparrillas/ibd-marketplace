@@ -64,7 +64,7 @@ class IngredientController extends Controller
 		$ingredient->expiration_date = $request->input('expiration_date');
 		$ingredient->save();
 
-		return back()->with('success', 'Ingrediente registrado exitosamente.');
+		return back()->with('success', "Ingrediente {$ingredient->name} registrado exitosamente.");
 	}
 
 	public function show(string $id)
@@ -112,7 +112,7 @@ class IngredientController extends Controller
 		$ingredient->expiration_date = $request->input('expiration_date');
 		$ingredient->save();
 
-		return back()->with('success', 'Ingrediente actualizado exitosamente.');
+		return back()->with('success', "Ingrediente {$ingredient->name} actualizado exitosamente.");
 	}
 
 	public function destroy(string $id)
@@ -130,7 +130,7 @@ class IngredientController extends Controller
 
 		$ingredient->delete();
 
-		return back()->with('success', 'Ingrediente eliminado exitosamente.');
+		return back()->with('success', "Ingrediente {$ingredient->name} eliminado exitosamente.");
 	}
 
 	public function get(Request $request)

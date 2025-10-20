@@ -91,7 +91,7 @@ class DishController extends Controller
 		$dish->save();
 
 		return back()
-			->with('success', 'Platillo registrado exitosamente.')
+			->with('success', "Platillo {$dish->name} registrado exitosamente.")
 			->with('warning', !$dish->image_url ? "Falta agregar una imagen a {$dish->name}" : null);
 	}
 
@@ -144,7 +144,7 @@ class DishController extends Controller
 		$dish->allergens = $request->input('allergens');
 		$dish->save();
 
-		return back()->with('success', 'Platillo actualizado exitosamente.');
+		return back()->with('success', "Platillo {$dish->name} actualizado exitosamente.");
 	}
 
 	public function destroy(string $id)
@@ -181,7 +181,7 @@ class DishController extends Controller
 			unlink(public_path($imagePath));
 		}
 
-		return back()->with('success', 'Platillo eliminado exitosamente.');
+		return back()->with('success', "Platillo {$dish->name} eliminado exitosamente.");
 	}
 
 	public function get(Request $request)

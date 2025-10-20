@@ -18,8 +18,6 @@ import { IngredientTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
 import DeleteIngredient from './delete-ingredient';
 import EditIngredient from './edit-ingredient';
 import {
@@ -46,11 +44,6 @@ type Props = {
 
 export default function Ingredientes() {
     const data = usePage<Props>().props.ingredients;
-    const success = usePage<Props>().props.success as string | undefined;
-
-    useEffect(() => {
-        if (success) toast.success(success);
-    }, [success]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
