@@ -35,6 +35,7 @@ Route::post('reset-password', [NewPasswordController::class, 'store'])
 Route::resource('/ingredients', IngredientController::class)->names('ingredients');
 
 Route::resource('/dishes', DishController::class)->names('dishes');
+Route::post('/dishes/{id}/image', [DishController::class, 'uploadImage'])->name('dishes.image.upload');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataTable, DataTableColumnHeader } from '@/components/ui/data-table';
 import {
@@ -17,9 +18,12 @@ import { type BreadcrumbItem } from '@/types';
 import { DishTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { setDishToUploadImage, setOpenStoreDish } from './dishesStore';
+import ImageDish from './image-dish';
+import StoreDish from './store-dish';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -61,16 +65,19 @@ export default function Dishes() {
                         Alérgenos: false,
                     }}
                     headerContent={
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            // onClick={() => setOpenStoreDish(true)}
-                        >
-                            <Plus />
-                        </Button>
+                        <StoreDish>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setOpenStoreDish(true)}
+                            >
+                                <Plus />
+                            </Button>
+                        </StoreDish>
                     }
                 />
             </div>
+            <ImageDish />
         </AppLayout>
     );
 }
@@ -97,6 +104,14 @@ function ActionCell(props: { dish: DishTable }) {
                         Editar
                         <DropdownMenuShortcut>
                             <Pencil />
+                        </DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setDishToUploadImage(dish)}
+                    >
+                        Cambiar Imagen
+                        <DropdownMenuShortcut>
+                            <Image />
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -140,8 +155,17 @@ const columns: ColumnDef<DishTable>[] = [
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
-        id: 'URL de Imagen',
+        id: 'Imagen',
         accessorKey: 'image_url',
+        cell: ({ row: { original: dish } }) => (
+            <Badge
+                onClick={() => setDishToUploadImage(dish)}
+                variant={dish.image_url ? 'default' : 'outline'}
+                className="cursor-pointer"
+            >
+                {dish.image_url ? 'Ver Imagen' : 'Sin Imagen'}
+            </Badge>
+        ),
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {

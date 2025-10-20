@@ -27,7 +27,7 @@ class Dish extends Model
 	];
 
 	protected $casts = [
-		'price' => 'decimal:2',
+		'price' => 'float',
 		'preparation_time' => 'integer',
 		'is_available' => 'boolean',
 		'is_featured' => 'boolean',
