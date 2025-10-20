@@ -21,7 +21,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { setDishToUploadImage, setOpenStoreDish } from './dishesStore';
+import {
+    setDishToEdit,
+    setDishToUploadImage,
+    setOpenStoreDish,
+} from './dishesStore';
+import EditDish from './edit-dish';
 import ImageDish from './image-dish';
 import StoreDish from './store-dish';
 
@@ -78,6 +83,7 @@ export default function Dishes() {
                 />
             </div>
             <ImageDish />
+            <EditDish />
         </AppLayout>
     );
 }
@@ -98,9 +104,7 @@ function ActionCell(props: { dish: DishTable }) {
                 <DropdownMenuLabel>Opciones para {name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem
-                    // onClick={() => setDishToEdit(dish)}
-                    >
+                    <DropdownMenuItem onClick={() => setDishToEdit(dish)}>
                         Editar
                         <DropdownMenuShortcut>
                             <Pencil />

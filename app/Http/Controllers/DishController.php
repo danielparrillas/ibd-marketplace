@@ -104,7 +104,6 @@ class DishController extends Controller
 			'description' => 'nullable|string',
 			'price' => 'required|numeric|min:0',
 			'category' => 'required|string|max:100',
-			'image_url' => 'nullable|string|max:500',
 			'preparation_time' => 'required|integer|min:0',
 			'is_available' => 'nullable|boolean',
 			'is_featured' => 'nullable|boolean',
@@ -126,10 +125,9 @@ class DishController extends Controller
 		$dish->description = $request->input('description');
 		$dish->price = $request->input('price');
 		$dish->category = $request->input('category');
-		$dish->image_url = $request->input('image_url');
 		$dish->preparation_time = $request->input('preparation_time');
-		$dish->is_available = $request->input('is_available', true);
-		$dish->is_featured = $request->input('is_featured', false);
+		$dish->is_available = $request->has('is_available');
+		$dish->is_featured = $request->has('is_featured');
 		$dish->calories = $request->input('calories');
 		$dish->allergens = $request->input('allergens');
 		$dish->save();
