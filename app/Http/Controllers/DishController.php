@@ -14,6 +14,7 @@ class DishController extends Controller
 		$userId = Auth::id();
 		$restaurantId = Restaurant::where('user_id', $userId)->value('id');
 		$success = session('success');
+		$warning = session('warning');
 
 		if (!$restaurantId) {
 			return back()->withErrors(['restaurant' => 'No se encontró un restaurante asociado al usuario.']);
@@ -24,6 +25,7 @@ class DishController extends Controller
 		return inertia('restaurant/dishes/dishes', [
 			'dishes' => $dishes,
 			'success' => $success,
+			'warning' => $warning
 		]);
 	}
 
@@ -80,7 +82,9 @@ class DishController extends Controller
 		$dish->allergens = $request->input('allergens');
 		$dish->save();
 
-		return back()->with('success', 'Platillo registrado exitosamente.');
+		return back()
+			->with('success', 'Platillo registrado exitosamente.')
+			->with('warning', !$dish->image_url ? "Falta agregar una imagen a {$dish->name}" : null);
 	}
 
 	public function show(string $id)

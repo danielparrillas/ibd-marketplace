@@ -19,8 +19,6 @@ import { DishTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
 import {
     setDishToEdit,
     setDishToUploadImage,
@@ -47,11 +45,6 @@ type Props = {
 
 export default function Dishes() {
     const data = usePage<Props>().props.dishes;
-    const success = usePage<Props>().props.success as string | undefined;
-
-    useEffect(() => {
-        if (success) toast.success(success);
-    }, [success]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
