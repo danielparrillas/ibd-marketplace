@@ -22,19 +22,18 @@ import {
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import DeleteDish from './delete-dish';
 import { setOpenStoreDish } from './dishesStore';
-import EditDish from './edit-dish';
-import ImageDish from './image-dish';
 import StoreDish from './store-dish';
 
 type Props = {
     dish: DishTable;
     dishIngredients: (DishIngredientTable & { ingredient: IngredientTable })[];
+    availableIngredients: IngredientTable[];
 };
 
 export default function DishIngredients() {
-    const { dish, dishIngredients } = usePage<Props>().props;
+    const { dish, dishIngredients, availableIngredients } =
+        usePage<Props>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -50,6 +49,8 @@ export default function DishIngredients() {
             href: '#',
         },
     ];
+
+    console.log({ dish, dishIngredients, availableIngredients });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -80,9 +81,6 @@ export default function DishIngredients() {
                     }
                 />
             </div>
-            <ImageDish />
-            <EditDish />
-            <DeleteDish />
         </AppLayout>
     );
 }
