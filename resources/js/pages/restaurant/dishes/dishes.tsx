@@ -13,12 +13,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
+import dishes from '@/routes/dishes';
 import ingredients from '@/routes/ingredients';
 import { type BreadcrumbItem } from '@/types';
 import { DishTable } from '@/types/tables';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+    EllipsisVertical,
+    Image,
+    List,
+    Pencil,
+    Plus,
+    Trash2,
+} from 'lucide-react';
 import DeleteDish from './delete-dish';
 import {
     setDishToDelete,
@@ -42,7 +50,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type Props = {
-    dishes: DishTable[];
+    dishes: (DishTable & { ingredients_count: number })[];
 };
 
 export default function Dishes() {
@@ -84,7 +92,7 @@ export default function Dishes() {
     );
 }
 
-function ActionCell(props: { dish: DishTable }) {
+function ActionCell(props: { dish: Props['dishes'][0] }) {
     const {
         dish,
         dish: { name },
@@ -106,6 +114,16 @@ function ActionCell(props: { dish: DishTable }) {
                             <Pencil />
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
+                    <Link
+                        href={dishes.ingredients.index({ dishId: dish.id }).url}
+                    >
+                        <DropdownMenuItem>
+                            Ver ingredientes
+                            <DropdownMenuShortcut>
+                                <List />
+                            </DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem
                         onClick={() => setDishToUploadImage(dish)}
                     >
@@ -129,7 +147,7 @@ function ActionCell(props: { dish: DishTable }) {
     );
 }
 
-const columns: ColumnDef<DishTable>[] = [
+const columns: ColumnDef<Props['dishes'][0]>[] = [
     {
         id: 'Acciones',
         cell: ({ row }) => <ActionCell dish={row.original} />,
@@ -165,6 +183,18 @@ const columns: ColumnDef<DishTable>[] = [
             >
                 {dish.image_url ? 'Ver Imagen' : 'Sin Imagen'}
             </Badge>
+        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} />,
+    },
+    {
+        id: 'Ingredientes',
+        accessorKey: 'ingredients_count',
+        cell: ({ getValue, row: { original: d } }) => (
+            <Link href={dishes.ingredients.index({ dishId: d.id }).url}>
+                <Badge variant={getValue() ? 'default' : 'outline'}>
+                    {getValue() as string}
+                </Badge>
+            </Link>
         ),
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },

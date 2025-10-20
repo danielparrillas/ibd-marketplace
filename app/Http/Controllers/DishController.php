@@ -20,7 +20,15 @@ class DishController extends Controller
 			return back()->withErrors(['restaurant' => 'No se encontró un restaurante asociado al usuario.']);
 		}
 
-		$dishes = Dish::where('restaurant_id', $restaurantId)->get();
+		$dishes = Dish::where('restaurant_id', $restaurantId)
+			->withCount('ingredients')
+			->get()
+			->map(function ($dish) {
+				return [
+					...$dish->toArray(),
+					'ingredients_count' => (int) $dish->ingredients_count,
+				];
+			});
 
 		return inertia('restaurant/dishes/dishes', [
 			'dishes' => $dishes,
