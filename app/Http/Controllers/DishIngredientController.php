@@ -31,7 +31,13 @@ class DishIngredientController extends Controller
 			->get();
 
 		// Obtener todos los ingredientes disponibles para el restaurante
-		$availableIngredients = Ingredient::where('restaurant_id', $restaurantId)->get();
+		$availableIngredients = Ingredient::where('restaurant_id', $restaurantId)
+			->whereNotIn('id', function ($query) use ($dishId) {
+				$query->select('ingredient_id')
+					->from('dish_ingredients')
+					->where('dish_id', $dishId);
+			})
+			->get();
 
 		return inertia('restaurant/dishes/dish-ingredients', [
 			'dish' => $dish,

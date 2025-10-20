@@ -22,8 +22,8 @@ import {
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { setOpenStoreDish } from './dishesStore';
-import StoreDish from './store-dish';
+import { setOpenStoreDishIngredient } from './dishIngredientsStore';
+import StoreDishIngredient from './store-dish-ingredient';
 
 type Props = {
     dish: DishTable;
@@ -50,8 +50,6 @@ export default function DishIngredients() {
         },
     ];
 
-    console.log({ dish, dishIngredients, availableIngredients });
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Platillos" />
@@ -69,15 +67,15 @@ export default function DishIngredients() {
                         Alérgenos: false,
                     }}
                     headerContent={
-                        <StoreDish>
+                        <StoreDishIngredient>
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setOpenStoreDish(true)}
+                                onClick={() => setOpenStoreDishIngredient(true)}
                             >
                                 <Plus />
                             </Button>
-                        </StoreDish>
+                        </StoreDishIngredient>
                     }
                 />
             </div>
@@ -141,12 +139,12 @@ const columns: ColumnDef<Props['dishIngredients'][number]>[] = [
     },
     {
         id: 'Nombre',
-        accessorKey: 'name',
+        accessorKey: 'ingredient.name',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
-        id: 'Cantidad',
-        accessorKey: 'quantity',
+        id: 'Cantidad Requerida',
+        accessorKey: 'quantity_needed',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
 ];

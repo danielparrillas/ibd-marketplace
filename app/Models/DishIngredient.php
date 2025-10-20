@@ -19,7 +19,7 @@ class DishIngredient extends Model
 	];
 
 	protected $casts = [
-		'quantity_needed' => 'decimal:3',
+		'quantity_needed' => 'float',
 		'created_at' => 'datetime',
 		'updated_at' => 'datetime',
 	];
