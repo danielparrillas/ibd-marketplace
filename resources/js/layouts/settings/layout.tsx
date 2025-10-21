@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
-import { show } from '@/routes/two-factor';
+//import { show } from '@/routes/two-factor';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
@@ -21,11 +21,11 @@ const sidebarNavItems: NavItem[] = [
         href: editPassword(),
         icon: null,
     },
-    {
+/*     {
         title: 'Two-Factor Auth',
         href: show(),
         icon: null,
-    },
+    }, */
     {
         title: 'Appearance',
         href: editAppearance(),
