@@ -22,7 +22,9 @@ import {
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import DeleteDishIngredient from './delete-dish-ingredient';
 import {
+    setDishIngredientToDelete,
     setDishIngredientToEdit,
     setOpenStoreDishIngredient,
 } from './dishIngredientsStore';
@@ -84,6 +86,7 @@ export default function DishIngredients() {
                 />
             </div>
             <EditDishIngredient />
+            <DeleteDishIngredient />
         </AppLayout>
     );
 }
@@ -117,7 +120,9 @@ function ActionCell(props: {
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        // onClick={() => setDishToDelete(dish)}
+                        onClick={() =>
+                            setDishIngredientToDelete(dishIngredient)
+                        }
                         className="text-destructive focus:text-destructive"
                     >
                         Eliminar
