@@ -22,7 +22,6 @@ class ComboController extends Controller
 
 		$combos = Combo::where('restaurant_id', $restaurantId)
 			->withCount('dishes')
-			->with('dishes')
 			->get()
 			->map(function ($combo) {
 				return [
