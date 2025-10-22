@@ -16,7 +16,7 @@ import { dashboard } from '@/routes';
 import combos from '@/routes/combos';
 import { type BreadcrumbItem } from '@/types';
 import { ComboTable } from '@/types/tables';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
 import {
@@ -168,12 +168,12 @@ const columns: ColumnDef<Props['combos'][0]>[] = [
     {
         id: 'Platillos',
         accessorKey: 'dishes_count',
-        cell: ({ getValue, row: { original: d } }) => (
-            // <Link href={dishes.ingredients.index({ dishId: d.id }).url}>
-            <Badge variant={getValue() ? 'default' : 'outline'}>
-                {getValue() as string}
-            </Badge>
-            // </Link>
+        cell: ({ getValue, row: { original: c } }) => (
+            <Link href={combos.dishes.index({ comboId: c.id }).url}>
+                <Badge variant={getValue() ? 'default' : 'outline'}>
+                    {getValue() as string}
+                </Badge>
+            </Link>
         ),
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
