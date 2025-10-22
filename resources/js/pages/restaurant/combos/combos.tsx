@@ -19,7 +19,8 @@ import { ComboTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { setOpenStoreCombo } from './combosStore';
+import { setComboToUploadImage, setOpenStoreCombo } from './combosStore';
+import ImageCombo from './image-combo';
 import StoreCombo from './store-combo';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -62,14 +63,13 @@ export default function Combos() {
                     }
                 />
             </div>
+            <ImageCombo />
         </AppLayout>
     );
 }
 
 function ActionCell(props: { combo: Props['combos'][0] }) {
-    const {
-        combo: { name },
-    } = props;
+    const { combo } = props;
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -78,7 +78,9 @@ function ActionCell(props: { combo: Props['combos'][0] }) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuLabel>Opciones para {name}</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                    Opciones para {combo.name}
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
@@ -98,7 +100,7 @@ function ActionCell(props: { combo: Props['combos'][0] }) {
                         </DropdownMenuItem>
                     </Link> */}
                     <DropdownMenuItem
-                    // onClick={() => setDishToUploadImage(dish)}
+                        onClick={() => setComboToUploadImage(combo)}
                     >
                         Cambiar Imagen
                         <DropdownMenuShortcut>
@@ -145,7 +147,7 @@ const columns: ColumnDef<Props['combos'][0]>[] = [
         accessorKey: 'image_url',
         cell: ({ row: { original: combo } }) => (
             <Badge
-                // onClick={() => setComboToUploadImage(combo)}
+                onClick={() => setComboToUploadImage(combo)}
                 variant={combo.image_url ? 'default' : 'outline'}
                 className="cursor-pointer"
             >
