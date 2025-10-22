@@ -26,8 +26,8 @@ class Combo extends Model
 	protected $casts = [
 		'combo_price' => 'float',
 		'is_available' => 'boolean',
-		'valid_from' => 'datetime',
-		'valid_until' => 'datetime',
+		'valid_from' => 'date:Y-m-d',
+		'valid_until' => 'date:Y-m-d',
 	];
 
 	public function restaurant(): BelongsTo

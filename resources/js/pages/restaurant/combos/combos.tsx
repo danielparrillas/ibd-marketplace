@@ -19,7 +19,12 @@ import { ComboTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { setComboToUploadImage, setOpenStoreCombo } from './combosStore';
+import {
+    setComboToEdit,
+    setComboToUploadImage,
+    setOpenStoreCombo,
+} from './combosStore';
+import EditCombo from './edit-combo';
 import ImageCombo from './image-combo';
 import StoreCombo from './store-combo';
 
@@ -64,6 +69,7 @@ export default function Combos() {
                 />
             </div>
             <ImageCombo />
+            <EditCombo />
         </AppLayout>
     );
 }
@@ -83,7 +89,7 @@ function ActionCell(props: { combo: Props['combos'][0] }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setComboToEdit(combo)}>
                         Editar
                         <DropdownMenuShortcut>
                             <Pencil />
@@ -176,15 +182,11 @@ const columns: ColumnDef<Props['combos'][0]>[] = [
     {
         id: 'Válido Desde',
         accessorKey: 'valid_from',
-        accessorFn: ({ valid_from }) =>
-            valid_from ? new Date(valid_from).toLocaleDateString() : '',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
         id: 'Válido Hasta',
         accessorKey: 'valid_until',
-        accessorFn: ({ valid_until }) =>
-            valid_until ? new Date(valid_until).toLocaleDateString() : '',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
 ];
