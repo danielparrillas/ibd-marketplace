@@ -21,8 +21,12 @@ import {
 } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { setOpenStoreDishIngredient } from './dishIngredientsStore';
+import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+    setDishIngredientToEdit,
+    setOpenStoreDishIngredient,
+} from './dishIngredientsStore';
+import EditDishIngredient from './edit-dish-ingredient';
 import StoreDishIngredient from './store-dish-ingredient';
 
 type Props = {
@@ -79,6 +83,7 @@ export default function DishIngredients() {
                     }
                 />
             </div>
+            <EditDishIngredient />
         </AppLayout>
     );
 }
@@ -103,18 +108,12 @@ function ActionCell(props: {
                 <DropdownMenuLabel>Opciones para {name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setDishIngredientToEdit(dishIngredient)}
+                    >
                         Editar
                         <DropdownMenuShortcut>
                             <Pencil />
-                        </DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                    // onClick={() => setDishToUploadImage(dish)}
-                    >
-                        Cambiar Imagen
-                        <DropdownMenuShortcut>
-                            <Image />
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -144,7 +143,8 @@ const columns: ColumnDef<Props['dishIngredients'][number]>[] = [
     },
     {
         id: 'Cantidad Requerida',
-        accessorKey: 'quantity_needed',
+        accessorFn: ({ quantity_needed, ingredient: { unit_measure } }) =>
+            `${quantity_needed} ${unit_measure}`,
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
 ];

@@ -1,10 +1,14 @@
-import { DishTable } from '@/types/tables';
+import { DishIngredientTable, IngredientTable } from '@/types/tables';
 import { create } from 'zustand';
 
 type DishIngredientStore = {
     openStoreDishIngredient: boolean;
-    dishIngredientToEdit?: DishTable | null;
-    dishIngredientToDelete?: DishTable | null;
+    dishIngredientToEdit?:
+        | (DishIngredientTable & { ingredient: IngredientTable })
+        | null;
+    dishIngredientToDelete?:
+        | (DishIngredientTable & { ingredient: IngredientTable })
+        | null;
 };
 
 export const useDishIngredientsStore = create<DishIngredientStore>()(
@@ -16,10 +20,17 @@ export const useDishIngredientsStore = create<DishIngredientStore>()(
 export const setOpenStoreDishIngredient = (open: boolean) =>
     useDishIngredientsStore.setState({ openStoreDishIngredient: open });
 
-export const setDishIngredientToEdit = (dishIngredient: DishTable | null) =>
-    useDishIngredientsStore.setState({ dishIngredientToEdit: dishIngredient });
+export const setDishIngredientToEdit = (
+    dishIngredient:
+        | (DishIngredientTable & { ingredient: IngredientTable })
+        | null,
+) => useDishIngredientsStore.setState({ dishIngredientToEdit: dishIngredient });
 
-export const setDishIngredientToDelete = (dishIngredient: DishTable | null) =>
+export const setDishIngredientToDelete = (
+    dishIngredient:
+        | (DishIngredientTable & { ingredient: IngredientTable })
+        | null,
+) =>
     useDishIngredientsStore.setState({
         dishIngredientToDelete: dishIngredient,
     });
