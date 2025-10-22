@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import ingredients from '@/routes/ingredients';
+import profile from '@/routes/restaurant/profile';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
@@ -30,13 +31,7 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'My restaurant',
-        href: '#',
-        icon: Building2,
-    },
-];
+
 
 export function AppSidebar() {
     const userType = usePage<SharedData>().props.auth.user.user_type;
@@ -55,6 +50,17 @@ export function AppSidebar() {
             icon: HandPlatter,
         });
     }
+//Menu de perfil de restaurante en el sidebar
+const footerNavItems: NavItem[] =
+  userType === 'restaurant'
+    ? [
+        {
+          title: 'My restaurant',
+          href: profile.edit(),
+          icon: Building2,
+        },
+      ]
+    : [];
 
     return (
         <Sidebar collapsible="icon" variant="inset">

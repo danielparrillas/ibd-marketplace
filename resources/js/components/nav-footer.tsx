@@ -35,7 +35,7 @@ export function NavFooter({
                                             ? item.href
                                             : item.href.url
                                     }
-                                    target="_blank"
+                                    //target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     {item.icon && (

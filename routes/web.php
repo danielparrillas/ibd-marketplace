@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		return  Inertia::render('dashboard');
 	})->name('dashboard');
 	Route::resource('/customer', CustomerController::class)->names('customer');
-	Route::resource('/restaurant', RestaurantController::class)->names('restaurant');
+	//Route::resource('/restaurant', RestaurantController::class)->names('restaurant');
 });
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
 	->name('password.request');
