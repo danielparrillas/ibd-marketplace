@@ -17,12 +17,20 @@ import { type BreadcrumbItem } from '@/types';
 import { ComboDishTable, ComboTable, DishTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Pencil, Trash2 } from 'lucide-react';
+import { EllipsisVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+    setComboDishToDelete,
+    setComboDishToEdit,
+    setOpenStoreComboDish,
+} from './comboDishesStore';
+import DeleteComboDish from './delete-combo-dish';
+import EditComboDish from './edit-combo-dish';
+import StoreComboDish from './store-combo-dish';
 
 type Props = {
     combo: ComboTable;
     comboDishes: (ComboDishTable & { dish: DishTable })[];
-    availableIngredients: DishTable[];
+    availableDishes: DishTable[];
 };
 
 export default function ComboDishes() {
@@ -59,25 +67,32 @@ export default function ComboDishes() {
                         'URL de Imagen': false,
                         Alérgenos: false,
                     }}
-                    // headerContent={
-                    //     <StoreDishIngredient>
-                    //         <Button
-                    //             variant="outline"
-                    //             size="sm"
-                    //             onClick={() => setOpenStoreDishIngredient(true)}
-                    //         >
-                    //             <Plus />
-                    //         </Button>
-                    //     </StoreDishIngredient>
-                    // }
+                    headerContent={
+                        <StoreComboDish>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setOpenStoreComboDish(true)}
+                            >
+                                <Plus />
+                            </Button>
+                        </StoreComboDish>
+                    }
                 />
             </div>
+            <EditComboDish />
+            <DeleteComboDish />
         </AppLayout>
     );
 }
 
 function ActionCell(props: { comboDish: Props['comboDishes'][number] }) {
-    const { comboDish } = props;
+    const {
+        comboDish,
+        comboDish: {
+            dish: { name },
+        },
+    } = props;
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -86,13 +101,11 @@ function ActionCell(props: { comboDish: Props['comboDishes'][number] }) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuLabel>
-                    Opciones para {comboDish.dish.name}
-                </DropdownMenuLabel>
+                <DropdownMenuLabel>Opciones para {name}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem
-                    // onClick={() => setDishIngredientToEdit(dishIngredient)}
+                        onClick={() => setComboDishToEdit(comboDish)}
                     >
                         Editar
                         <DropdownMenuShortcut>
@@ -100,9 +113,7 @@ function ActionCell(props: { comboDish: Props['comboDishes'][number] }) {
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        // onClick={() =>
-                        //     setDishIngredientToDelete(dishIngredient)
-                        // }
+                        onClick={() => setComboDishToDelete(comboDish)}
                         className="text-destructive focus:text-destructive"
                     >
                         Eliminar
@@ -123,7 +134,7 @@ const columns: ColumnDef<Props['comboDishes'][number]>[] = [
     },
     {
         id: 'Nombre',
-        accessorKey: 'ingredient.name',
+        accessorKey: 'dish.name',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
