@@ -28,8 +28,6 @@ class Combo extends Model
 		'is_available' => 'boolean',
 		'valid_from' => 'datetime',
 		'valid_until' => 'datetime',
-		'created_at' => 'datetime',
-		'updated_at' => 'datetime',
 	];
 
 	public function restaurant(): BelongsTo

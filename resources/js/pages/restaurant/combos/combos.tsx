@@ -14,12 +14,13 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import combos from '@/routes/combos';
-import dishes from '@/routes/dishes';
 import { type BreadcrumbItem } from '@/types';
 import { ComboTable } from '@/types/tables';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVertical, Image, Pencil, Trash2 } from 'lucide-react';
+import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
+import { setOpenStoreCombo } from './combosStore';
+import StoreCombo from './store-combo';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,6 +49,17 @@ export default function Combos() {
                     columns={columns}
                     data={data}
                     calcTotals={false}
+                    headerContent={
+                        <StoreCombo>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setOpenStoreCombo(true)}
+                            >
+                                <Plus />
+                            </Button>
+                        </StoreCombo>
+                    }
                 />
             </div>
         </AppLayout>
@@ -143,14 +155,14 @@ const columns: ColumnDef<Props['combos'][0]>[] = [
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
-        id: 'Ingredientes',
-        accessorKey: 'ingredients_count',
+        id: 'Platillos',
+        accessorKey: 'dishes_count',
         cell: ({ getValue, row: { original: d } }) => (
-            <Link href={dishes.ingredients.index({ dishId: d.id }).url}>
-                <Badge variant={getValue() ? 'default' : 'outline'}>
-                    {getValue() as string}
-                </Badge>
-            </Link>
+            // <Link href={dishes.ingredients.index({ dishId: d.id }).url}>
+            <Badge variant={getValue() ? 'default' : 'outline'}>
+                {getValue() as string}
+            </Badge>
+            // </Link>
         ),
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
@@ -162,11 +174,15 @@ const columns: ColumnDef<Props['combos'][0]>[] = [
     {
         id: 'Válido Desde',
         accessorKey: 'valid_from',
+        accessorFn: ({ valid_from }) =>
+            valid_from ? new Date(valid_from).toLocaleDateString() : '',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
     {
         id: 'Válido Hasta',
         accessorKey: 'valid_until',
+        accessorFn: ({ valid_until }) =>
+            valid_until ? new Date(valid_until).toLocaleDateString() : '',
         header: ({ column }) => <DataTableColumnHeader column={column} />,
     },
 ];
