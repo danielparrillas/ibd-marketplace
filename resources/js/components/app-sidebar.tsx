@@ -11,12 +11,15 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import combos from '@/routes/combos';
+import dishes from '@/routes/dishes';
 import ingredients from '@/routes/ingredients';
 import profile from '@/routes/restaurant/profile';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
     Building2,
+    EggFried,
     HandPlatter,
     LayoutGrid,
     ShoppingBasket,
@@ -31,8 +34,6 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-
-
 export function AppSidebar() {
     const userType = usePage<SharedData>().props.auth.user.user_type;
 
@@ -46,21 +47,26 @@ export function AppSidebar() {
         });
         navItems.push({
             title: 'Platillos',
-            href: ingredients.index().url.replace('ingredients', 'dishes'),
+            href: dishes.index(),
+            icon: EggFried,
+        });
+        navItems.push({
+            title: 'Combos',
+            href: combos.index(),
             icon: HandPlatter,
         });
     }
-//Menu de perfil de restaurante en el sidebar
-const footerNavItems: NavItem[] =
-  userType === 'restaurant'
-    ? [
-        {
-          title: 'My restaurant',
-          href: profile.edit(),
-          icon: Building2,
-        },
-      ]
-    : [];
+    //Menu de perfil de restaurante en el sidebar
+    const footerNavItems: NavItem[] =
+        userType === 'restaurant'
+            ? [
+                  {
+                      title: 'My restaurant',
+                      href: profile.edit(),
+                      icon: Building2,
+                  },
+              ]
+            : [];
 
     return (
         <Sidebar collapsible="icon" variant="inset">

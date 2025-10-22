@@ -24,7 +24,7 @@ class Combo extends Model
 	];
 
 	protected $casts = [
-		'combo_price' => 'decimal:2',
+		'combo_price' => 'float',
 		'is_available' => 'boolean',
 		'valid_from' => 'datetime',
 		'valid_until' => 'datetime',
