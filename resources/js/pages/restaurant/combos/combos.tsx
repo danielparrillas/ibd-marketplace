@@ -20,10 +20,12 @@ import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
 import {
+    setComboToDelete,
     setComboToEdit,
     setComboToUploadImage,
     setOpenStoreCombo,
 } from './combosStore';
+import DeleteCombo from './delete-combo';
 import EditCombo from './edit-combo';
 import ImageCombo from './image-combo';
 import StoreCombo from './store-combo';
@@ -70,6 +72,7 @@ export default function Combos() {
             </div>
             <ImageCombo />
             <EditCombo />
+            <DeleteCombo />
         </AppLayout>
     );
 }
@@ -114,7 +117,7 @@ function ActionCell(props: { combo: Props['combos'][0] }) {
                         </DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        // onClick={() => setDishToDelete(dish)}
+                        onClick={() => setComboToDelete(combo)}
                         className="text-destructive focus:text-destructive"
                     >
                         Eliminar
