@@ -19,7 +19,8 @@ import { DishTable, PromotionTable, RestaurantTable } from '@/types/tables';
 import { Head, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVertical, Image, Pencil, Plus, Trash2 } from 'lucide-react';
-import { setOpenStorePromotion } from './promotionsStore';
+import EditPromotion from './edit-promotion';
+import { setOpenStorePromotion, setPromotionToEdit } from './promotionsStore';
 import StorePromotion from './store-promotion';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -70,6 +71,7 @@ export default function Promotions() {
                     }
                 />
             </div>
+            <EditPromotion />
         </AppLayout>
     );
 }
@@ -90,7 +92,7 @@ function ActionCell(props: { promotion: Props['promotions'][0] }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem
-                    // onClick={() => setDishToEdit(dish)}
+                        onClick={() => setPromotionToEdit(promotion)}
                     >
                         Editar
                         <DropdownMenuShortcut>
