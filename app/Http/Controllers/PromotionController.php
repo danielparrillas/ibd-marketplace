@@ -194,4 +194,25 @@ class PromotionController extends Controller
 
 		return back()->with('success', 'Promoción actualizada exitosamente.');
 	}
+
+	public function destroy(Promotion $promotion)
+	{
+		// Verificar que la promoción pertenece al restaurante del usuario autenticado
+		$userId = Auth::id();
+		$restaurantId = Restaurant::where('user_id', $userId)->value('id');
+
+		if ($promotion->restaurant_id != $restaurantId) {
+			return back()->with('warning', 'No autorizado para eliminar esta promoción.');
+		}
+
+		// Validar que la promoción no haya sido utilizada
+		if ($promotion->usage_count > 0) {
+			return back()->with('warning', 'No se puede eliminar la promoción "' . $promotion->name . '" porque ya ha sido utilizada ' . $promotion->usage_count . ' vez(veces).');
+		}
+
+		$promotionName = $promotion->name;
+		$promotion->delete();
+
+		return back()->with('success', 'Promoción "' . $promotionName . '" eliminada exitosamente.');
+	}
 }
