@@ -14,12 +14,14 @@ import { dashboard } from '@/routes';
 import combos from '@/routes/combos';
 import dishes from '@/routes/dishes';
 import ingredients from '@/routes/ingredients';
+import promotions from '@/routes/promotions';
 import profile from '@/routes/restaurant/profile';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
     Building2,
     EggFried,
+    HandCoins,
     HandPlatter,
     LayoutGrid,
     ShoppingBasket,
@@ -54,6 +56,11 @@ export function AppSidebar() {
             title: 'Combos',
             href: combos.index(),
             icon: HandPlatter,
+        });
+        navItems.push({
+            title: 'Promociones',
+            href: promotions.index(),
+            icon: HandCoins,
         });
     }
     //Menu de perfil de restaurante en el sidebar
