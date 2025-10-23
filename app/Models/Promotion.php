@@ -29,9 +29,9 @@ class Promotion extends Model
 	];
 
 	protected $casts = [
-		'discount_value' => 'decimal:2',
-		'min_order_amount' => 'decimal:2',
-		'max_discount' => 'decimal:2',
+		'discount_value' => 'float',
+		'min_order_amount' => 'float',
+		'max_discount' => 'float',
 		'is_active' => 'boolean',
 		'usage_limit' => 'integer',
 		'usage_count' => 'integer',
