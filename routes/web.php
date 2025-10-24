@@ -8,9 +8,31 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\DishController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use App\Models\TopRestaurant;
 
 Route::get('/', function () {
-	return Inertia::render('welcome');
+	$topRestaurants = TopRestaurant::all()->map(function ($r) {
+		// Normalizar logo_url a URL pública servible
+		if (!empty($r->logo_url)) {
+			// Si ya viene con /storage o http, dejar tal cual; si viene relativo, convertir a /storage/...
+			if (!str_starts_with($r->logo_url, '/storage') && !str_starts_with($r->logo_url, 'http')) {
+				$r->logo_url = Storage::disk('public')->url($r->logo_url); // /storage/...
+			}
+		}
+		return $r;
+	});
+
+	// Cargar métricas de "Nuestro Éxito"
+	$ourSuccess = DB::table('our_successes')
+		->select('count_restautants', 'count_customers', 'count_orders')
+		->first();
+
+	return Inertia::render('welcome', [
+		'featuredRestaurants' => $topRestaurants,
+		'ourSuccess' => $ourSuccess,
+	]);
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {

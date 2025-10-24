@@ -41,8 +41,8 @@ const { restaurant } = usePage<{ restaurant: Restaurant }>().props;
           <HeadingSmall title="Información del restaurante" description="Actualiza los detalles de tu restaurante" />
 
           <Form
-            method="put"
-          // action={route('restaurant.profile.update')}
+            {...edit.profile.update.form()}
+            encType="multipart/form-data"
             className="space-y-6"
             options={{
               preserveScroll: true,
@@ -137,16 +137,26 @@ const { restaurant } = usePage<{ restaurant: Restaurant }>().props;
                   <InputError message={errors.description} />
                 </div>
 
+                {/* Carga de Logo (archivo) */}
                 <div className="grid gap-2">
-                  <Label htmlFor="logo_url">Logo URL</Label>
+                  <Label htmlFor="logo">Logo</Label>
                   <Input
-                    id="logo_url"
-                    defaultValue={restaurant.logo_url}
-                    name="logo_url"
+                    id="logo"
+                    name="logo"
+                    type="file"
+                    accept="image/*"
                     className="mt-1 block w-full"
-                    placeholder="Logo URL"
                   />
-                  <InputError message={errors.logo_url} />
+                  {restaurant.logo_url && (
+                    <div className="mt-2">
+                      <img
+                        src={restaurant.logo_url.startsWith('http') ? restaurant.logo_url : `/storage/${restaurant.logo_url}`}
+                        alt="Logo actual"
+                        className="h-16 w-16 object-cover rounded"
+                      />
+                    </div>
+                  )}
+                  <InputError message={errors.logo} />
                 </div>
 
                 <div className="flex items-center gap-4">
