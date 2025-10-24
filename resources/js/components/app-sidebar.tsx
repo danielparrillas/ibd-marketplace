@@ -1,4 +1,4 @@
-import { NavFooter } from '@/components/nav-footer';
+//import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -15,11 +15,11 @@ import combos from '@/routes/combos';
 import dishes from '@/routes/dishes';
 import ingredients from '@/routes/ingredients';
 import promotions from '@/routes/promotions';
-import profile from '@/routes/restaurant/profile';
+//import profile from '@/routes/restaurant/profile';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
-    Building2,
+   // Building2,
     EggFried,
     HandCoins,
     HandPlatter,
@@ -64,7 +64,7 @@ export function AppSidebar() {
         });
     }
     //Menu de perfil de restaurante en el sidebar
-    const footerNavItems: NavItem[] =
+/*     const footerNavItems: NavItem[] =
         userType === 'restaurant'
             ? [
                   {
@@ -73,7 +73,7 @@ export function AppSidebar() {
                       icon: Building2,
                   },
               ]
-            : [];
+            : []; */
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -94,7 +94,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

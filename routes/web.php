@@ -17,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('dashboard', function () {
 		return  Inertia::render('dashboard');
 	})->name('dashboard');
-	Route::resource('/customer', CustomerController::class)->names('customer');
+	//Route::resource('/customer', CustomerController::class)->names('customer');
 	//Route::resource('/restaurant', RestaurantController::class)->names('restaurant');
 });
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
@@ -35,3 +35,4 @@ Route::post('reset-password', [NewPasswordController::class, 'store'])
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/restaurant.php';
+require __DIR__.'/customer.php';

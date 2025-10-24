@@ -1,13 +1,21 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
-
+import { type BreadcrumbItem } from '@/types';
 import InputError from '@/components/input-error';
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-//import SettingsLayout from '@/layouts/settings/layout';
+import SettingsLayout from '@/layouts/settings/layout';
+import edit from '@/routes/restaurant';
+
+const breadcrumbs: BreadcrumbItem[] = [
+  {
+    title: 'Perfil del restaurante',
+    href: edit.profile.edit().url,
+  },
+];
 
 export default function RestaurantProfile() {
 interface Restaurant {
@@ -24,11 +32,11 @@ interface Restaurant {
 const { restaurant } = usePage<{ restaurant: Restaurant }>().props;
 
   return (
-    <AppLayout> 
+    <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Perfil del Restaurante" />
 
-      {/*  <SettingsLayout> */}
-        <div className="container mx-auto px-4">
+      <SettingsLayout>
+        {/* <div className="container mx-auto px-4"> */}
         <div className="space-y-6">
           <HeadingSmall title="Información del restaurante" description="Actualiza los detalles de tu restaurante" />
 
@@ -160,8 +168,8 @@ const { restaurant } = usePage<{ restaurant: Restaurant }>().props;
             )}
           </Form>
         </div>
-      {/* </SettingsLayout> */}
-        </div>
+      </SettingsLayout>
+       
     </AppLayout>
   );
 }
