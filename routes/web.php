@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\TopRestaurant;
+use App\Http\Controllers\RestaurantExploreController;
 
 Route::get('/', function () {
 	$topRestaurants = TopRestaurant::all()->map(function ($r) {
@@ -58,3 +59,6 @@ require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/restaurant.php';
 require __DIR__.'/customer.php';
+
+Route::get('/restaurants', [RestaurantExploreController::class, 'index'])
+	->name('restaurants.explore');

@@ -26,6 +26,11 @@ class User extends Authenticatable
     ];
 
     /**
+     * Persist timestamps using ISO 8601 so SQL Server parses them reliably.
+     */
+    protected $dateFormat = 'Y-m-d\TH:i:s.v';
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>

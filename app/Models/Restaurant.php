@@ -19,6 +19,7 @@ class Restaurant extends Model
         'responsible_name',
     ];
     public $timestamps = true;
+    protected $dateFormat = 'Y-m-d\TH:i:s.v';
 
     public function user()
     {

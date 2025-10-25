@@ -304,3 +304,50 @@ ALTER TABLE orders ADD FOREIGN KEY (delivery_address_id) REFERENCES addresses(id
 ALTER TABLE order_items ADD FOREIGN KEY (order_id) REFERENCES orders(id);
 ALTER TABLE order_items ADD FOREIGN KEY (dish_id) REFERENCES dishes(id);
 ALTER TABLE order_items ADD FOREIGN KEY (combo_id) REFERENCES combos(id);
+GO
+-- Vista our_successes
+CREATE VIEW [dbo].[our_successes]
+AS
+SELECT pvt.restaurant [count_restautants]
+	,pvt.customer [count_customers]
+	,pvt.[order] [count_orders]
+FROM (
+	SELECT [user_type]
+		,count([id]) [count]
+	FROM [foodmarketplace].[dbo].[users]
+	WHERE user_type IN (
+			'restaurant'
+			,'customer'
+			)
+	GROUP BY [user_type]
+	
+	UNION
+	
+	SELECT 'order'
+		,Count([id])
+	FROM [foodmarketplace].[dbo].[orders]
+	) src
+pivot(sum([count]) FOR user_type IN (
+			[customer]
+			,[restaurant]
+			,[order]
+			)) pvt
+GO
+-- Vista top_restaurant
+
+CREATE VIEW [dbo].[top_restaurant]
+AS
+SELECT TOP 3 t0.[restaurant_id]
+	,t1.[business_name]
+	,t1.[legal_name]
+	,t1.[phone]
+	,t1.[logo_url]
+	,COUNT(1) [Orders_Count]
+FROM [foodmarketplace].[dbo].[orders] t0
+JOIN [foodmarketplace].[dbo].[restaurants] t1 ON t0.restaurant_id = t1.id
+GROUP BY t0.[restaurant_id]
+	,t1.[business_name]
+	,t1.[legal_name]
+	,t1.[phone]
+	,t1.[logo_url]
+GO

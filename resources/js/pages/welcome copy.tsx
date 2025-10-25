@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
-import { dashboard, login, register } from '@/routes';
-import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-
-// Componentes UI
+import { login, register } from '@/routes'; // Rutas necesarias para el contenido
+// Tipos
+import { type SharedData } from '@/types';
+// Componentes UI (simulando Radix UI vía Shadcn/ui)
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChefHat, Users, TrendingUp, MapPin } from "lucide-react"; // Solo se mantienen los iconos usados en el cuerpo
+import { Star, Clock, MapPin, ChefHat, Users, TrendingUp } from "lucide-react";
 
-// Importamos los componentes reutilizables (Asegúrate que las rutas sean correctas)
+// Importamos los nuevos componentes reutilizables (Asegúrate de que la ruta '@/Components/' sea correcta)
 import AppNavbar from '@/components/app-navbar'; 
 import AppFooter from '@/components/app-footer'; 
 
@@ -24,15 +23,15 @@ interface FeaturedRestaurant {
 }
 // Tipado de métricas "Nuestro Éxito"
 interface OurSuccess {
-  count_restautants: number;
+  count_restautants: number; // nombre de columna según la consulta proporcionada
   count_customers: number;
   count_orders: number;
 }
 // ---------------------------------------------
 
 export default function Welcome({ featuredRestaurants, ourSuccess }: { featuredRestaurants: FeaturedRestaurant[]; ourSuccess?: OurSuccess | null }) {
-  // Eliminamos la lógica de useState/useEffect para el tema, ya que AppNavbar la manejará.
-  const { auth } = usePage<SharedData>().props;
+  // Nota: La lógica de Auth ya no es necesaria aquí, pero se mantiene para fines de conteo
+  const { auth } = usePage<SharedData>().props; // Necesario si quieres usar auth en el contenido principal
 
   // Formateo y valores por defecto para la sección "Nuestro Éxito"
   const counts = {
@@ -50,12 +49,12 @@ export default function Welcome({ featuredRestaurants, ourSuccess }: { featuredR
   };
 
   return (
-    // Se asume que AppNavbar aplica el dark/light mode al <html>
+    // Se elimina la lógica de tema de aquí, asumiendo que AppNavbar la gestiona en el <html>
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-800 dark:text-gray-200">
       
       <Head title="Bienvenida | FoodMarket" />
 
-      {/* 1. Navbar Reutilizado (Sustituye al Header en línea y la lógica de tema) */}
+      {/* --- Navbar Reutilizado --- */}
       <AppNavbar />
 
       <main>
@@ -70,26 +69,20 @@ export default function Welcome({ featuredRestaurants, ourSuccess }: { featuredR
                 Pide en cientos de restaurantes locales y recibe deliciosas comidas directamente en tu puerta. Fresco, rápido y fácil.
               </p>
               
-              {/*
-                2. CUADRO DE BÚSQUEDA FUNCIONAL:
-                - Envuelto en <form> con method="GET" y action="/restaurants" (o tu ruta de explorar).
-                - El input clave debe tener name="search".
-                - El botón es type="submit".
-              */}
-              <form action="/restaurants" method="GET" className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
+              {/* Búsqueda/Ubicación */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center">
                 <div className="flex items-center bg-white dark:bg-gray-800 rounded-full px-6 py-3 shadow-lg min-w-80 border dark:border-gray-700">
                   <MapPin className="h-5 w-5 text-gray-400 mr-3" />
                   <input
                     type="text"
-                    placeholder="Buscar por restaurante o tipo de comida..."
-                    name="search" // <--- ¡Esto hace que funcione la búsqueda!
+                    placeholder="Ingresa tu dirección de entrega"
                     className="flex-1 outline-none text-gray-700 dark:text-gray-300 bg-transparent"
                   />
                 </div>
-                <Button type="submit" size="lg" className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 px-8">
+                <Button size="lg" className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 px-8">
                   Buscar Restaurantes
                 </Button>
-              </form>
+              </div>
 
               <div className="mt-8 flex space-x-4">
                 <Link href={register()}>
@@ -197,7 +190,7 @@ export default function Welcome({ featuredRestaurants, ourSuccess }: { featuredR
         </section>
       </main>
 
-      {/* 3. Footer Reutilizado (Sustituye al Footer en línea) */}
+      {/* --- Footer Reutilizado --- */}
       <AppFooter />
       
     </div>
