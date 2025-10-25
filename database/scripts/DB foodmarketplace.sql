@@ -112,12 +112,6 @@ CREATE TABLE [dbo].[users](
 )
 GO
 
-CREATE TABLE password_reset_tokens (
-    email VARCHAR(255) NOT NULL PRIMARY KEY,
-    token VARCHAR(255) NOT NULL,
-    created_at DATETIME NULL
-);
-
 -- Tabla customers
 CREATE TABLE customers (
     id INT IDENTITY(1,1) PRIMARY KEY,
