@@ -37,6 +37,15 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
           : '#', // fallback si no hay userType
       icon: null,
     },
+    ...(userType === 'customer'
+    ? [
+        {
+          title: 'Direcciones de entrega',
+          href: '/addresses',
+          icon: null,
+        },
+      ]
+    : []),
     {
       title: 'Cambio de contraseña',
       href: editPassword(),

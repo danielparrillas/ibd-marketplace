@@ -148,8 +148,8 @@ CREATE TABLE addresses (
     user_id bigint NOT NULL,
     address_line_1 VARCHAR(255) NOT NULL,
     address_line_2 VARCHAR(255) NULL,
-    latitude DECIMAL(12,6) NOT NULL,
-    longitude DECIMAL(12,6) NOT NULL,
+    latitude DECIMAL(12,6) NULL,
+    longitude DECIMAL(12,6) NULL,
     delivery_instructions TEXT NULL,
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE()
