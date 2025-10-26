@@ -80,7 +80,7 @@ GO
 -- Tabla: sessions
 CREATE TABLE [dbo].[sessions](
 	[id] [nvarchar](255) NOT NULL PRIMARY KEY,
-	[user_id] INT NULL,
+	[user_id] bigint NULL,
 	[ip_address] [nvarchar](45) NULL,
 	[user_agent] [nvarchar](max) NULL,
 	[payload] [nvarchar](max) NOT NULL,
