@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -62,9 +63,45 @@ class RestaurantController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Restaurant $restaurant): Response
     {
-        //
+        $restaurant->load(['dishes' => function ($query) {
+            $query->available()->orderBy('category')->orderBy('name');
+        }]);
+
+        $restaurantData = [
+            'id' => $restaurant->id,
+            'business_name' => $restaurant->business_name,
+            'description' => $restaurant->description,
+            'logo_url' => $this->formatMediaPath($restaurant->logo_url),
+            'phone' => $restaurant->phone,
+            'minimum_order' => $restaurant->minimum_order ?? null,
+            'food_type' => $restaurant->food_type ?? null,
+            'location_city' => $restaurant->location_city ?? null,
+            'delivery_fee' => $restaurant->delivery_fee ?? null,
+            'delivery_radius' => $restaurant->delivery_radius ?? null,
+            'rating' => $restaurant->rating ?? null,
+        ];
+
+        $dishesData = $restaurant->dishes->map(function ($dish) {
+            return [
+                'id' => $dish->id,
+                'name' => $dish->name,
+                'description' => $dish->description ?? '',
+                'price' => (float) $dish->price,
+                'category' => $dish->category ?? 'General',
+                'is_available' => (bool) $dish->is_available,
+                'image_url' => $this->formatMediaPath($dish->image_url),
+                'preparation_time' => $dish->preparation_time ?? 0,
+                'calories' => $dish->calories ?? 0,
+                'allergens' => $dish->allergens,
+            ];
+        })->values()->all();
+
+        return Inertia::render('restaurants/show', [
+            'restaurant' => $restaurantData,
+            'dishes' => $dishesData,
+        ]);
     }
 
     /**
@@ -93,4 +130,17 @@ class RestaurantController extends Controller
     {
         //
     }
+
+        private function formatMediaPath(?string $path): ?string
+        {
+            if (! $path) {
+                return null;
+            }
+
+            if (Str::startsWith($path, ['http://', 'https://', '/storage'])) {
+                return $path;
+            }
+
+            return '/storage/'.ltrim($path, '/');
+        }
 }

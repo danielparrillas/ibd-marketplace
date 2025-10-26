@@ -164,7 +164,7 @@ export default function Explore({ restaurants }: ExploreProps) {
                     ) : (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {restaurants.data.map((restaurant) => (
-                                <Link key={restaurant.id} href={`/restaurant/${restaurant.id}`} className="block h-full">
+                                <Link key={restaurant.id} href={`/restaurants/${restaurant.id}`} className="block h-full">
                                     <Card className="overflow-hidden hover:shadow-xl transition-shadow cursor-pointer h-full flex flex-col dark:bg-gray-900">
                                         <div className="relative h-48">
                                             <img

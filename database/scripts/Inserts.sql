@@ -103,3 +103,23 @@ INSERT INTO order_items (order_id, item_type, dish_id, combo_id, quantity, unit_
 (5, 'combo', NULL, 3, 1, 150.00, 150.00),
 (6, 'dish', 6, NULL, 1, 120.00, 120.00),
 (7, 'dish', 7, NULL, 1, 89.00, 89.00);
+
+-- Inserta datos iniciales en la tabla catalogo payment_methods
+SET IDENTITY_INSERT payment_methods ON;
+INSERT INTO payment_methods 
+(id, name, code, category, is_active, supports_refunds, created_at, updated_at)
+VALUES
+-- === Pagos Digitales (Prioridad Alta) ===
+(1, 'Tarjeta de Crédito / Débito', 'CC_DC', 'Card', 1, 1, GETDATE(), GETDATE()),
+(2, 'PayPal', 'WAL_PP', 'Wallet', 1, 1, GETDATE(), GETDATE()),
+(3, 'Apple Pay / Google Pay', 'WAL_GP', 'Wallet', 1, 1, GETDATE(), GETDATE()),
+(4, 'Billetera Digital de la Plataforma', 'PLATFORM_WALLET', 'Digital', 1, 1, GETDATE(), GETDATE()),
+-- === Pagos a la Entrega (Logística) ===
+-- Nota: Efectivo no soporta reembolsos automáticos a través de la pasarela.
+(5, 'Efectivo a Contra Entrega', 'CASH_DEL', 'Cash', 1, 0, GETDATE(), GETDATE()),
+(6, 'Tarjeta a Contra Entrega (POS)', 'CARD_POS', 'Card_POS', 1, 1, GETDATE(), GETDATE()),
+-- === Métodos Alternativos / Vouchers ===
+(7, 'Vale / Ticket de Comida', 'MEAL_VOUCHER', 'Voucher', 1, 0, GETDATE(), GETDATE()),
+(8, 'Transferencia Bancaria (Local)', 'BANK_XFER', 'Bank', 1, 1, GETDATE(), GETDATE()),
+(9, 'Billetera Digital Local (ej. Yape/Nequi)', 'WAL_LOCAL', 'Digital', 1, 1, GETDATE(), GETDATE());
+SET IDENTITY_INSERT payment_methods OFF;

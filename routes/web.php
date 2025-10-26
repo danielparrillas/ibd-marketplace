@@ -62,3 +62,5 @@ require __DIR__.'/customer.php';
 
 Route::get('/restaurants', [RestaurantExploreController::class, 'index'])
 	->name('restaurants.explore');
+Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])
+    ->name('restaurants.show');
