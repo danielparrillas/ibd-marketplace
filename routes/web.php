@@ -6,6 +6,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +20,7 @@ Route::get('/', function () {
 		if (!empty($r->logo_url)) {
 			// Si ya viene con /storage o http, dejar tal cual; si viene relativo, convertir a /storage/...
 			if (!str_starts_with($r->logo_url, '/storage') && !str_starts_with($r->logo_url, 'http')) {
-				$r->logo_url = Storage::disk('public')->url($r->logo_url); // /storage/...
+				$r->logo_url = Storage::url($r->logo_url); // /storage/...
 			}
 		}
 		return $r;
@@ -59,6 +60,13 @@ require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/restaurant.php';
 require __DIR__.'/customer.php';
+
+Route::prefix('cart')->group(function () {
+	Route::get('/', [CartController::class, 'index'])->name('cart.index');
+	Route::match(['post', 'put'], 'add', [CartController::class, 'store'])->name('cart.add');
+	Route::delete('/', [CartController::class, 'destroy'])->name('cart.destroy');
+	Route::post('/clear', [CartController::class, 'destroy'])->name('cart.clear');
+});
 
 Route::get('/restaurants', [RestaurantExploreController::class, 'index'])
 	->name('restaurants.explore');

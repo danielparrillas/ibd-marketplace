@@ -1,10 +1,8 @@
-import { Head, Link, usePage, router } from '@inertiajs/react';
-import type { PageProps } from '@inertiajs/core';
-import { useState, useMemo } from 'react';
-import type { ReactNode } from 'react';
+import { Head, usePage, router } from '@inertiajs/react';
+import { useState, useMemo, useCallback } from 'react';
 
 // === Iconos y Componentes UI (Simulando Radix/Shadcn-ui) ===
-import { Star, Clock, MapPin, Phone, Search, Plus, Minus, ShoppingCart, ArrowLeft, ChefHat } from "lucide-react";
+import { Star, Clock, MapPin, Phone, Search, Plus, Minus, ShoppingCart, ArrowLeft, ChefHat, Trash2 } from "lucide-react";
 import AppNavbar from '@/components/app-navbar';
 import AppFooter from '@/components/app-footer';
 import { Button } from "@/components/ui/button";
@@ -12,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCart } from '@/hooks/use-cart';
+import { type SharedData } from '@/types';
 
 
 // === Tipos de Datos (Ajustados al Stack/BD) ===
@@ -43,27 +43,35 @@ interface Dish {
   allergens: string | null;
 }
 
-interface CartItem {
-  dish: Dish;
-  quantity: number;
-}
-
 // === Props de la Página Inertia ===
-interface RestaurantMenuProps extends PageProps {
-    restaurant: Restaurant;
-    dishes: Dish[];
+interface RestaurantMenuProps {
+  restaurant: Restaurant;
+  dishes: Dish[];
 }
 
 
 // === Componente Principal ===
 export default function RestaurantMenu() {
-  // === CORRECCIÓN APLICADA: Proporcionar un array vacío como fallback para 'dishes' ===
-  const { restaurant, dishes = [] } = usePage<RestaurantMenuProps>().props;
+  const page = usePage();
+  const props = page.props as unknown as RestaurantMenuProps & SharedData;
+  const { restaurant, dishes = [], auth } = props;
+  const isAuthenticated = Boolean(auth?.user?.id);
 
-  // === Lógica de Estado (Del Archivo Fuente) ===
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [cart, setCart] = useState<CartItem[]>([]);
+
+  const {
+    items: cartItems,
+    restaurant: cartRestaurant,
+    isLoading: isCartLoading,
+    isMutating: isCartMutating,
+    error: cartError,
+    setItemQuantity,
+    clearCart,
+    resetError,
+  } = useCart();
+
+  const cartBelongsToAnotherRestaurant = cartRestaurant !== null && cartRestaurant.id !== restaurant.id;
 
   // NOTA: 'dishes' ahora está garantizado como array, por lo que '.map' es seguro.
   const categories = useMemo(() => ["all", ...new Set(dishes.map((d) => d.category))], [dishes]);
@@ -72,35 +80,49 @@ export default function RestaurantMenu() {
     return dishes.filter((dish) => {
       const matchesSearch = dish.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "all" || dish.category === selectedCategory;
-      // Usando 'is_available' del tipo Dish
       return matchesSearch && matchesCategory && dish.is_available;
     });
   }, [dishes, searchTerm, selectedCategory]);
 
-  const addToCart = (dish: Dish) => {
-    setCart((prev) => {
-      const existingItem = prev.find((item) => item.dish.id === dish.id);
-      if (existingItem) {
-        return prev.map((item) => (item.dish.id === dish.id ? { ...item, quantity: item.quantity + 1 } : item));
-      }
-      return [...prev, { dish, quantity: 1 }];
-    });
-  };
+  const getCartItemQuantity = useCallback(
+    (dishId: number) => {
+      const item = cartItems.find((entry) => entry.dish.id === dishId);
+      return item ? item.quantity : 0;
+    },
+    [cartItems],
+  );
 
-  const removeFromCart = (dishId: number) => {
-    setCart((prev) => {
-      const existingItem = prev.find((item) => item.dish.id === dishId);
-      if (existingItem && existingItem.quantity > 1) {
-        return prev.map((item) => (item.dish.id === dishId ? { ...item, quantity: item.quantity - 1 } : item));
+  const addToCart = useCallback(
+    (dish: Pick<Dish, 'id'>) => {
+      if (cartBelongsToAnotherRestaurant) {
+        return;
       }
-      return prev.filter((item) => item.dish.id !== dishId);
-    });
-  };
 
-  const getCartItemQuantity = (dishId: number) => {
-    const item = cart.find((item) => item.dish.id === dishId);
-    return item ? item.quantity : 0;
-  };
+  resetError();
+  const nextQuantity = getCartItemQuantity(dish.id) + 1;
+  setItemQuantity(dish.id, nextQuantity).catch(() => undefined);
+    },
+    [cartBelongsToAnotherRestaurant, getCartItemQuantity, resetError, setItemQuantity],
+  );
+
+  const removeFromCart = useCallback(
+    (dishId: number) => {
+      const currentQuantity = getCartItemQuantity(dishId);
+      if (currentQuantity <= 0) {
+        return;
+      }
+
+      resetError();
+      const nextQuantity = currentQuantity - 1;
+      setItemQuantity(dishId, Math.max(nextQuantity, 0)).catch(() => undefined);
+    },
+    [getCartItemQuantity, resetError, setItemQuantity],
+  );
+
+  const handleClearCart = useCallback(() => {
+    resetError();
+    clearCart().catch(() => undefined);
+  }, [clearCart, resetError]);
 
   const minimumOrder = typeof restaurant.minimum_order === "number" ? restaurant.minimum_order : 0;
   const deliveryFee = typeof restaurant.delivery_fee === "number" ? restaurant.delivery_fee : 0;
@@ -108,15 +130,46 @@ export default function RestaurantMenu() {
   const restaurantPhone = restaurant.phone ?? "Phone unavailable";
   const restaurantFoodType = restaurant.food_type ?? "Restaurante";
 
-  const cartTotal = cart.reduce((total, item) => total + item.dish.price * item.quantity, 0);
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const cartMetrics = useMemo(() => {
+    return cartItems.reduce(
+      (acc, item) => {
+        acc.subtotal += item.dish.price * item.quantity;
+        acc.count += item.quantity;
+        return acc;
+      },
+      { subtotal: 0, count: 0 },
+    );
+  }, [cartItems]);
+
+  const cartTotal = cartMetrics.subtotal;
+  const cartItemCount = cartMetrics.count;
+
+  const cartRestaurantLabel = useMemo(() => {
+    if (cartRestaurant) {
+      return `${cartRestaurant.business_name}`;
+    }
+
+    return `${restaurant.business_name} (ID ${restaurant.id})`;
+  }, [cartRestaurant, restaurant.business_name, restaurant.id]);
+
+  const disableAddButtons = cartBelongsToAnotherRestaurant || isCartMutating;
+  const isCartEmpty = cartItems.length === 0;
+  const showOtherRestaurantWarning = cartBelongsToAnotherRestaurant && !isCartEmpty;
 
   const handleCheckout = () => {
-    // Usando localStorage y router de Inertia (simulando next/navigation)
-    localStorage.setItem("foodmarket_cart", JSON.stringify(cart));
-    localStorage.setItem("foodmarket_checkout_restaurant", JSON.stringify(restaurant));
-    // Asumimos que la ruta de checkout es '/checkout'
-    router.get("/checkout");
+    if (!isAuthenticated) {
+      router.get(
+        '/login',
+        {
+          message: 'Debes iniciar sesión para completar tu pedido.',
+          intended: '/checkout',
+        },
+        { preserveScroll: true },
+      );
+      return;
+    }
+
+    router.get('/checkout');
   };
 
   const handleBack = () => {
@@ -277,11 +330,23 @@ export default function RestaurantMenu() {
                                   <div className="flex items-center space-x-2">
                                     {getCartItemQuantity(dish.id) > 0 ? (
                                       <>
-                                        <Button variant="outline" size="sm" onClick={() => removeFromCart(dish.id)} className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600">
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => removeFromCart(dish.id)}
+                                          disabled={isCartMutating}
+                                          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600"
+                                        >
                                           <Minus className="h-3 w-3" />
                                         </Button>
                                         <span className="font-medium dark:text-white">{getCartItemQuantity(dish.id)}</span>
-                                        <Button variant="outline" size="sm" onClick={() => addToCart(dish)} className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600">
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => addToCart(dish)}
+                                          disabled={disableAddButtons}
+                                          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600"
+                                        >
                                           <Plus className="h-3 w-3" />
                                         </Button>
                                       </>
@@ -289,6 +354,7 @@ export default function RestaurantMenu() {
                                       <Button
                                         onClick={() => addToCart(dish)}
                                         size="sm"
+                                        disabled={disableAddButtons}
                                         className="bg-orange-500 hover:bg-orange-600 text-white"
                                       >
                                         <Plus className="h-3 w-3 mr-1" />
@@ -311,33 +377,72 @@ export default function RestaurantMenu() {
             <div className="lg:col-span-1">
               <Card className="sticky top-6 dark:bg-gray-900 dark:border-gray-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 dark:text-white">
-                    <ShoppingCart className="h-5 w-5" />
-                    Your Order ({cartItemCount})
-                  </CardTitle>
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="flex items-center gap-2 dark:text-white">
+                      <ShoppingCart className="h-5 w-5" />
+                      Tú Orden ({cartItemCount} combos)
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearCart}
+                      disabled={isCartEmpty || isCartMutating}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only sm:not-sr-only sm:ml-1">Vaciar</span>
+                    </Button>
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">Pedido actual: {cartRestaurantLabel}</p>
                 </CardHeader>
                 <CardContent>
-                  {cart.length === 0 ? (
+                  {cartError && (
+                    <div className="mb-4 rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/30 dark:text-red-300">
+                      {cartError}
+                    </div>
+                  )}
+
+                  {showOtherRestaurantWarning && cartRestaurant && (
+                    <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-600 dark:bg-amber-900/30 dark:text-amber-200">
+                      Tu carrito pertenece a {cartRestaurant.business_name}. Vacíalo para ordenar en {restaurant.business_name}.
+                    </div>
+                  )}
+
+                  {isCartLoading ? (
+                    <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">Cargando carrito...</div>
+                  ) : isCartEmpty ? (
                     <div className="text-center py-8">
                       <ShoppingCart className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600 dark:text-gray-400">Your cart is empty</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-500">Add items to get started</p>
+                      <p className="text-gray-600 dark:text-gray-400">Tu carrito está vacío</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500">Agrega platos para comenzar</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {/* Items del Carrito */}
-                      {cart.map((item) => (
+                      {cartItems.map((item) => (
                         <div key={item.dish.id} className="flex items-center justify-between dark:text-white">
                           <div className="flex-1">
                             <h4 className="font-medium">{item.dish.name}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">${item.dish.price.toFixed(2)} each</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">${item.dish.price.toFixed(2)} cada uno</p>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Button variant="outline" size="sm" onClick={() => removeFromCart(item.dish.id)} className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeFromCart(item.dish.id)}
+                              disabled={isCartMutating}
+                              className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600"
+                            >
                               <Minus className="h-3 w-3" />
                             </Button>
                             <span className="font-medium">{item.quantity}</span>
-                            <Button variant="outline" size="sm" onClick={() => addToCart(item.dish)} className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addToCart(item.dish)}
+                              disabled={disableAddButtons}
+                              className="dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:dark:bg-gray-600"
+                            >
                               <Plus className="h-3 w-3" />
                             </Button>
                           </div>
@@ -364,7 +469,7 @@ export default function RestaurantMenu() {
                       <Button
                         onClick={handleCheckout}
                         className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-                        disabled={cartTotal < minimumOrder}
+                        disabled={cartTotal < minimumOrder || isCartEmpty || isCartMutating}
                       >
                         {cartTotal < minimumOrder
                           ? `Min. order $${minimumOrder.toFixed(2)}`

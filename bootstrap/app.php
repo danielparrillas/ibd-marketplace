@@ -15,7 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->encryptCookies(
-            except: ['appearance', 'sidebar_state']
+            except: ['appearance', 'sidebar_state', 'XSRF-TOKEN', 'laravel_token']
+        );
+
+        $middleware->validateCsrfTokens(
+           // except: ['cart', 'cart/*', 'login', 'register', 'logout', 'password/*', 'settings/profile', 'settings/profile/*']
+            except: ['*']
         );
 
         $middleware->web(append: [

@@ -147,7 +147,7 @@ export default function Welcome({ featuredRestaurants, ourSuccess }: { featuredR
                       <TrendingUp className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2" />
                       <span>{restaurant.Orders_Count} pedidos</span>
                     </div>
-                    <Link href={`/restaurant/${restaurant.restaurant_id}`}>
+                    <Link href={`/restaurants/${restaurant.restaurant_id}`}>
                         <Button className="w-full mt-4 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600">Ver Menú</Button>
                     </Link>
                   </CardContent>
