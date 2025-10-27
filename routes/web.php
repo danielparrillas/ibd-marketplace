@@ -37,6 +37,10 @@ Route::get('/', function () {
 	]);
 })->name('home');
 
+Route::get('/about', fn () => Inertia::render('about'))->name('about');
+
+Route::get('/contact', fn () => Inertia::render('contact'))->name('contact');
+
 Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('dashboard', function () {
 		return  Inertia::render('dashboard');

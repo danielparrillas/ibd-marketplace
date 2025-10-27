@@ -20,17 +20,17 @@ export default function AppFooter() {
                     <h5 className="font-semibold mb-4">Cliente</h5>
                     <ul className="space-y-2 text-gray-400">
                         <li>
-                        <Link href="/help" className="hover:text-white transition-colors">
+                        <Link href="/contact#soporte" className="hover:text-white transition-colors">
                             Centro de Ayuda
                         </Link>
                         </li>
                         <li>
-                        <Link href="/account" className="hover:text-white transition-colors">
+                        <Link href="/settings/profile" className="hover:text-white transition-colors">
                             Tu Cuenta
                         </Link>
                         </li>
                         <li>
-                        <Link href="/track-order" className="hover:text-white transition-colors">
+                        <Link href="/cart" className="hover:text-white transition-colors">
                             Rastrear Pedido
                         </Link>
                         </li>
@@ -42,17 +42,17 @@ export default function AppFooter() {
                     <h5 className="font-semibold mb-4">Socios</h5>
                     <ul className="space-y-2 text-gray-400">
                         <li>
-                        <Link href="/restaurant/signup" className="hover:text-white transition-colors">
+                        <Link href="/register" className="hover:text-white transition-colors">
                             Registrar Restaurante
                         </Link>
                         </li>
                         <li>
-                        <Link href="/restaurant/dashboard" className="hover:text-white transition-colors">
+                        <Link href="/dashboard" className="hover:text-white transition-colors">
                             Panel de Restaurante
                         </Link>
                         </li>
                         <li>
-                        <Link href="/restaurant/support" className="hover:text-white transition-colors">
+                        <Link href="/contact#partners" className="hover:text-white transition-colors">
                             Soporte a Socios
                         </Link>
                         </li>
@@ -69,7 +69,7 @@ export default function AppFooter() {
                         </Link>
                         </li>
                         <li>
-                        <Link href="/careers" className="hover:text-white transition-colors">
+                        <Link href="/about#careers" className="hover:text-white transition-colors">
                             Carreras
                         </Link>
                         </li>
