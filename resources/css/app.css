@@ -61,110 +61,150 @@
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Marca y superficies alineadas al Welcome:
+   - Primario naranja (similar a Tailwind orange-600)
+   - Fondos gris claro/oscuro
+   - Anillo y énfasis naranja
+*/
 :root {
-    /* Tonos crema claros y cálidos */
-    --background: oklch(0.97 0.015 85);
-    --foreground: oklch(0.25 0.02 65);
-    --card: oklch(0.98 0.012 85);
-    --card-foreground: oklch(0.25 0.02 65);
-    --popover: oklch(0.98 0.012 85);
-    --popover-foreground: oklch(0.25 0.02 65);
+    /* Superficies claras */
+    --background: oklch(0.98 0.003 260);
+    /* ~ gray-50 */
+    --foreground: oklch(0.35 0.02 260);
+    /* ~ gray-800 */
 
-    /* Crema oscuro para primary */
-    --primary: oklch(0.45 0.05 65);
-    --primary-foreground: oklch(0.98 0.012 85);
+    --card: oklch(0.99 0.002 260);
+    /* ~ white */
+    --card-foreground: var(--foreground);
 
-    /* Crema medio para secondary */
-    --secondary: oklch(0.92 0.02 80);
-    --secondary-foreground: oklch(0.30 0.03 65);
+    --popover: oklch(0.99 0.002 260);
+    --popover-foreground: var(--foreground);
 
-    /* Crema suave para muted */
-    --muted: oklch(0.94 0.018 82);
-    --muted-foreground: oklch(0.50 0.03 70);
+    /* Naranja de marca (≈ orange-600) */
+    --primary: oklch(0.67 0.19 42);
+    --primary-foreground: oklch(0.99 0.002 260);
+    /* blanco */
 
-    /* Crema acentuado */
-    --accent: oklch(0.88 0.04 75);
-    --accent-foreground: oklch(0.30 0.03 65);
+    /* Secundario gris suave */
+    --secondary: oklch(0.95 0.006 260);
+    /* ~ gray-100 */
+    --secondary-foreground: oklch(0.35 0.02 260);
 
-    /* Tonos tierra para destructive */
-    --destructive: oklch(0.55 0.18 35);
-    --destructive-foreground: oklch(0.98 0.012 85);
+    /* Muted y texto muted */
+    --muted: oklch(0.96 0.004 260);
+    /* ~ gray-100/200 */
+    --muted-foreground: oklch(0.55 0.02 260);
+    /* ~ gray-500/600 */
 
-    /* Bordes crema sutiles */
-    --border: oklch(0.88 0.02 80);
-    --input: oklch(0.88 0.02 80);
-    --ring: oklch(0.70 0.04 75);
+    /* Acento naranja tenue (para hovers suaves) */
+    --accent: oklch(0.93 0.04 42);
+    /* ~ orange-50/100 */
+    --accent-foreground: oklch(0.35 0.02 260);
 
-    /* Charts en tonos tierra y crema */
-    --chart-1: oklch(0.65 0.12 65);
-    --chart-2: oklch(0.70 0.10 120);
-    --chart-3: oklch(0.60 0.08 200);
-    --chart-4: oklch(0.75 0.14 45);
-    --chart-5: oklch(0.68 0.15 85);
+    /* Destructive en rojo térreo */
+    --destructive: oklch(0.60 0.20 25);
+    /* ~ red-600 */
+    --destructive-foreground: oklch(0.99 0.002 260);
+
+    /* Bordes / inputs / anillos */
+    --border: oklch(0.90 0.006 260);
+    /* ~ gray-200 */
+    --input: var(--border);
+    --ring: oklch(0.75 0.13 42);
+    /* ~ orange-400 para focus */
+
+    /* Charts (paleta cálida/neutral) */
+    --chart-1: oklch(0.67 0.19 42);
+    /* naranja */
+    --chart-2: oklch(0.70 0.11 120);
+    /* verde */
+    --chart-3: oklch(0.60 0.09 210);
+    /* azul */
+    --chart-4: oklch(0.75 0.12 75);
+    /* lima/amarillo */
+    --chart-5: oklch(0.62 0.14 12);
+    /* rojo-anaranjado */
 
     --radius: 0.625rem;
 
-    /* Sidebar en tonos crema */
-    --sidebar: oklch(0.95 0.02 82);
-    --sidebar-foreground: oklch(0.30 0.03 65);
-    --sidebar-primary: oklch(0.45 0.05 65);
-    --sidebar-primary-foreground: oklch(0.98 0.012 85);
-    --sidebar-accent: oklch(0.90 0.025 78);
-    --sidebar-accent-foreground: oklch(0.30 0.03 65);
-    --sidebar-border: oklch(0.88 0.02 80);
-    --sidebar-ring: oklch(0.70 0.04 75);
+    /* Sidebar claro */
+    --sidebar: oklch(0.98 0.003 260);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: oklch(0.95 0.006 260);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
 }
 
 .dark {
-    /* Crema oscuro profundo */
-    --background: oklch(0.20 0.02 60);
-    --foreground: oklch(0.95 0.015 85);
-    --card: oklch(0.22 0.02 62);
-    --card-foreground: oklch(0.95 0.015 85);
-    --popover: oklch(0.22 0.02 62);
-    --popover-foreground: oklch(0.95 0.015 85);
+    /* Superficies oscuras */
+    --background: oklch(0.20 0.02 260);
+    /* ~ gray-950 */
+    --foreground: oklch(0.96 0.01 260);
+    /* ~ gray-100 */
 
-    /* Crema claro para primary en dark */
-    --primary: oklch(0.92 0.02 80);
-    --primary-foreground: oklch(0.25 0.02 65);
+    --card: oklch(0.22 0.02 260);
+    /* ~ gray-900 */
+    --card-foreground: var(--foreground);
 
-    /* Crema medio oscuro para secondary */
-    --secondary: oklch(0.32 0.03 65);
-    --secondary-foreground: oklch(0.95 0.015 85);
+    --popover: oklch(0.22 0.02 260);
+    --popover-foreground: var(--foreground);
+
+    /* Naranja accesible en dark (≈ orange-500/400 para contraste) */
+    --primary: oklch(0.78 0.15 42);
+    --primary-foreground: oklch(0.18 0.02 260);
+
+    /* Secundario gris medio */
+    --secondary: oklch(0.28 0.02 260);
+    /* ~ gray-700 */
+    --secondary-foreground: oklch(0.96 0.01 260);
 
     /* Muted oscuro */
-    --muted: oklch(0.30 0.025 68);
-    --muted-foreground: oklch(0.75 0.02 80);
+    --muted: oklch(0.26 0.02 260);
+    /* ~ gray-800 */
+    --muted-foreground: oklch(0.72 0.02 260);
+    /* ~ gray-300 */
 
-    /* Accent oscuro */
-    --accent: oklch(0.35 0.04 70);
-    --accent-foreground: oklch(0.95 0.015 85);
+    /* Acento tenue en dark */
+    --accent: oklch(0.30 0.03 260);
+    /* ~ gray-750 */
+    --accent-foreground: var(--foreground);
 
-    /* Destructive en dark mode */
-    --destructive: oklch(0.45 0.15 30);
-    --destructive-foreground: oklch(0.92 0.02 80);
+    /* Destructive en dark */
+    --destructive: oklch(0.58 0.20 25);
+    /* ~ red-500/600 */
+    --destructive-foreground: oklch(0.10 0.02 260);
 
-    /* Bordes oscuros */
-    --border: oklch(0.32 0.03 65);
-    --input: oklch(0.32 0.03 65);
-    --ring: oklch(0.50 0.04 70);
+    /* Bordes / inputs / anillo en dark */
+    --border: oklch(0.32 0.02 260);
+    /* ~ gray-700/800 */
+    --input: var(--border);
+    --ring: oklch(0.70 0.13 42);
+    /* naranja brillante para focus */
 
-    /* Charts oscuros */
-    --chart-1: oklch(0.55 0.15 65);
-    --chart-2: oklch(0.60 0.12 130);
-    --chart-3: oklch(0.65 0.14 45);
-    --chart-4: oklch(0.58 0.10 210);
-    --chart-5: oklch(0.62 0.16 85);
+    /* Charts en dark (ligeramente más vivos) */
+    --chart-1: oklch(0.75 0.17 42);
+    /* naranja */
+    --chart-2: oklch(0.70 0.12 135);
+    /* verde */
+    --chart-3: oklch(0.68 0.12 210);
+    /* azul */
+    --chart-4: oklch(0.78 0.14 75);
+    /* lima */
+    --chart-5: oklch(0.72 0.16 12);
+    /* rojo-anaranjado */
 
     /* Sidebar oscuro */
-    --sidebar: oklch(0.25 0.025 63);
-    --sidebar-foreground: oklch(0.95 0.015 85);
-    --sidebar-primary: oklch(0.92 0.02 80);
-    --sidebar-primary-foreground: oklch(0.25 0.02 65);
-    --sidebar-accent: oklch(0.32 0.03 68);
-    --sidebar-accent-foreground: oklch(0.95 0.015 85);
-    --sidebar-border: oklch(0.32 0.03 65);
-    --sidebar-ring: oklch(0.50 0.04 70);
+    --sidebar: oklch(0.22 0.02 260);
+    --sidebar-foreground: var(--foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: oklch(0.28 0.02 260);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
 }
 
 @layer base {
@@ -177,6 +217,13 @@
         -webkit-print-color-adjust: exact;
     }
 
+    /* Placeholders y selects más cercanos al Welcome */
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--muted-foreground);
+        opacity: 1;
+    }
+
     select:has(option:checked[value=""]) {
         color: var(--color-muted-foreground);
         font-style: italic;
@@ -184,12 +231,18 @@
 
     option {
         background: var(--muted);
-        color: var(--color-foreground);
+        color: var(--foreground);
         font-style: normal;
     }
 
     option[value=""] {
         color: var(--color-muted-foreground);
         font-style: italic;
+    }
+
+    /* Focus ring naranja consistente con el hero */
+    :is(button, a, input, textarea, select):focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 60%, transparent);
     }
 }
