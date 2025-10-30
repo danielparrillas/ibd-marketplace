@@ -55,7 +55,7 @@ class RegisteredUserController extends Controller
             'legal_document' => 'nullable|string|max:100',
             'business_license' => 'nullable|string|max:100',
             'description' => 'nullable|string',
-            'logo_url' => 'nullable|url|max:500',
+            'logo_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'responsible_name' => 'required|string|max:255',
         ]);
     }
@@ -131,17 +131,24 @@ class RegisteredUserController extends Controller
         }
 
         if ($request->user_type === 'restaurant') {
+            // Procesar la imagen del logo
+            $logoPath = null;
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('logos', 'public');
+            }
+
             $user->restaurant()->create([
-                'business_name' => $request->business_name,
-                'legal_name' => $request->legal_name,
-                'phone' => $request->phone,
-                'legal_document' => $request->legal_document,
+                'business_name'    => $request->business_name,
+                'legal_name'       => $request->legal_name,
+                'phone'            => $request->phone,
+                'legal_document'   => $request->legal_document,
                 'business_license' => $request->business_license,
-                'description' => $request->description,
-                'logo_url' => $request->logo_url,
+                'description'      => $request->description,
+                'logo_url'         => $logoPath, // Guarda la ruta, no el texto
                 'responsible_name' => $request->responsible_name,
             ]);
         }
+
 
         event(new Registered($user));
         Auth::login($user);

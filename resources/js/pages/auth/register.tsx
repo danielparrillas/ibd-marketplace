@@ -80,6 +80,7 @@ export default function Register() {
                         <CardContent>
                             <Form
                                 {...RegisteredUserController.store.form()}
+                                encType="multipart/form-data"
                                 resetOnSuccess={['password', 'password_confirmation']}
                                 disableWhileProcessing
                                 className="flex flex-col gap-6"
@@ -323,7 +324,7 @@ export default function Register() {
                                                         <InputError message={errors.description} />
                                                     </div>
 
-                                                    <div className="grid gap-2">
+                       {/*                              <div className="grid gap-2">
                                                         <Label htmlFor="logo_url" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                                                             URL del logotipo
                                                         </Label>
@@ -335,7 +336,22 @@ export default function Register() {
                                                             placeholder="https://..."
                                                         />
                                                         <InputError message={errors.logo_url} />
+                                                    </div> */}
+                                                    <div className="grid gap-2">
+                                                        <Label htmlFor="logo" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                                            Logotipo del restaurante
+                                                        </Label>
+                                                        <Input
+                                                            id="logo"
+                                                            name="logo"
+                                                            type="file"
+                                                            accept="image/*"
+                                                            tabIndex={11}
+                                                            className="mt-1 block w-full"
+                                                        />
+                                                        <InputError message={errors.logo} />
                                                     </div>
+
                                                 </>
                                             )}
                                         </div>
