@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\TopRestaurant;
 use App\Http\Controllers\RestaurantExploreController;
+use App\Http\Controllers\RestaurantDashboardController;
 
 Route::get('/', function () {
 	$topRestaurants = TopRestaurant::all()->map(function ($r) {
@@ -76,3 +77,5 @@ Route::get('/restaurants', [RestaurantExploreController::class, 'index'])
 	->name('restaurants.explore');
 Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])
     ->name('restaurants.show');
+
+	Route::middleware(['auth'])->get('/restaurants/dashboard', [RestaurantDashboardController::class, 'index']);

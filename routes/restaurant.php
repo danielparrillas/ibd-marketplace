@@ -8,6 +8,7 @@ use App\Http\Controllers\ComboDishController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantProfileController;
+use App\Http\Controllers\RestaurantDashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(
 
 		// Página de índice de promociones (Inertia), consume el endpoint JSON /promotions
 		Route::resource('/promotions', PromotionController::class)->names('promotions');
+		//rutas paraa el dashboard del restaurante
+		Route::middleware(['auth'])->get('/restaurants/dashboard', [RestaurantDashboardController::class, 'index'])->name('restaurant.dashboard');
+		Route::middleware(['auth'])->get('/api/restaurant/dashboard-data', [RestaurantDashboardController::class, 'showDashboard'])->name('restaurant.dashboard.data');
+	
 	}
 );
 /* Route::middleware(['auth', 'verified'])->group(function () {

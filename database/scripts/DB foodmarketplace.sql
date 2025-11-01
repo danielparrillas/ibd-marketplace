@@ -488,3 +488,131 @@ CREATE TABLE invoice_discounts (
     CONSTRAINT fk_invoice_discount_detail FOREIGN KEY (invoice_detail_id) 
         REFERENCES invoice_details(invoice_detail_id)
 );
+
+--***************SP PARA VENTAS POR PLATILLOS (30 DIAS)*********************
+CREATE PROCEDURE sp_sales_by_dish
+    @userId bigint
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @restaurantId bigint;
+    SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+
+    SELECT
+      d.id AS dish_id,
+      d.name AS dish_name,
+      SUM(oi.quantity) AS total_quantity
+    FROM order_items oi
+    LEFT JOIN dishes d ON oi.dish_id = d.id
+    JOIN orders o ON oi.order_id = o.id
+    WHERE o.status = 'completed'
+      AND o.restaurant_id = @restaurantId
+      AND o.created_at >= DATEADD(DAY, -30, GETDATE())
+      AND oi.dish_id IS NOT NULL
+    GROUP BY d.id, d.name
+
+    UNION ALL
+
+    SELECT
+      d2.id AS dish_id,
+      d2.name AS dish_name,
+      SUM(oi.quantity * cd.quantity) AS total_quantity
+    FROM order_items oi
+    JOIN combos c ON oi.combo_id = c.id
+    JOIN combo_dishes cd ON c.id = cd.combo_id
+    JOIN dishes d2 ON cd.dish_id = d2.id
+    JOIN orders o ON oi.order_id = o.id
+    WHERE o.status = 'completed'
+      AND o.restaurant_id = @restaurantId
+      AND o.created_at >= DATEADD(DAY, -30, GETDATE())
+      AND oi.combo_id IS NOT NULL
+    GROUP BY d2.id, d2.name;
+END
+
+--*************SP PARA BAJO STOCK*****************
+CREATE PROCEDURE sp_low_inventory
+    @userId bigint
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @restaurantId bigint;
+    SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+
+    SELECT TOP 5
+        name,
+        current_stock
+    FROM ingredients
+    WHERE restaurant_id = @restaurantId
+    ORDER BY current_stock ASC;
+END
+
+
+--**************SP PARA PEDIDOS EN LOS ULTIMOS 7 DIAS**************
+CREATE PROCEDURE sp_orders_last_7_days
+    @userId bigint
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @restaurantId bigint;
+    SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+
+    SELECT 
+        CAST(created_at AS DATE) AS order_date,
+        COUNT(*) AS order_count
+    FROM orders
+    WHERE status = 'completed'
+      AND restaurant_id = @restaurantId
+      AND created_at >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE))
+    GROUP BY CAST(created_at AS DATE)
+    ORDER BY order_date;
+END
+
+
+--**************SP VENTAS TOTALES ULTIMOS 7 DIAS******************
+CREATE PROCEDURE sp_sales_total_last_7_days
+    @userId bigint
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @restaurantId bigint;
+    SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+
+    SELECT 
+        CAST(created_at AS DATE) AS sale_date,
+        SUM(total_amount) AS total_sales
+    FROM orders
+    WHERE status = 'completed'
+      AND restaurant_id = @restaurantId
+      AND created_at >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE))
+    GROUP BY CAST(created_at AS DATE)
+    ORDER BY sale_date;
+END
+
+
+*************COMBOS MAS VENDIDOS (30 DIAS)************
+CREATE PROCEDURE sp_top_combos
+    @userId bigint
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @restaurantId bigint;
+    SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+
+    SELECT TOP 5
+        c.id AS combo_id,
+        c.name AS combo_name,
+        SUM(oi.quantity) AS total_quantity
+    FROM order_items oi
+    JOIN combos c ON oi.combo_id = c.id
+    JOIN orders o ON oi.order_id = o.id
+    WHERE o.status = 'completed'
+      AND o.restaurant_id = @restaurantId
+      AND o.created_at >= DATEADD(DAY, -30, GETDATE())
+    GROUP BY c.id, c.name
+    ORDER BY total_quantity DESC;
+END
