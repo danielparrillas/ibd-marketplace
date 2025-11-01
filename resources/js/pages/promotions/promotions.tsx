@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
+//import { dashboard } from '@/routes';
 import promotions from '@/routes/promotions';
 import { type BreadcrumbItem } from '@/types';
 import { DishTable, PromotionTable, RestaurantTable } from '@/types/tables';
@@ -31,7 +31,8 @@ import StorePromotion from './store-promotion';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard().url,
+        //href: dashboard().url,
+        href: '/restaurants/dashboard',
     },
     {
         title: 'Promociones',

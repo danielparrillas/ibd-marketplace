@@ -45,7 +45,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        //return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended($this->redirectTo());
     }
 
     /**
@@ -60,4 +61,19 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    //redirigir al dashboard segun el rol
+    protected function redirectTo()
+        {
+            $user = auth()->user();
+
+            if ($user->user_type === 'restaurant') {
+                return '/restaurants/dashboard';
+            }
+
+            // Otros roles aquí
+            return '/'; // Ruta por defecto para otros roles
+        }
+
+    
 }

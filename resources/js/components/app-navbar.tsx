@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 // Asegúrate de que '@/routes' esté correctamente mapeado en tu tsconfig.json
-import { dashboard, login, register, logout } from '@/routes'; 
+import { login, register, logout } from '@/routes'; 
 import { type SharedData } from '@/types';
 import { ChefHat, Sun, Moon, LogOut, LayoutDashboard } from "lucide-react";
 // Componentes UI (simulando Radix UI)
@@ -88,10 +88,10 @@ export default function AppNavbar() {
                                 Hola, {auth.user?.name.split(' ')[0] || 'Usuario'}!
                             </span>
 
-                            {/* Botón para Dashboard/Perfil */}
-                            <Link href={dashboard()}>
+                            {/* Botón para Dashboard/Perfil <Link href={dashboard()}>*/}
+                            <Link href='/settings/profile'>
                                 <Button variant="outline" size="sm" className="text-sm font-semibold border-orange-600 text-orange-600 hover:bg-orange-50 dark:border-orange-500 dark:text-orange-500 dark:hover:bg-gray-800">
-                                    <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
+                                    <LayoutDashboard className="h-4 w-4 mr-2" /> Perfil
                                 </Button>
                             </Link>
 

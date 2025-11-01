@@ -16,7 +16,7 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js';
-import restaurant from '@/routes/restaurant';
+//import restaurant from '@/routes/restaurant';
 
 
 
@@ -35,7 +35,7 @@ ChartJS.register(
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Dashboard',
-    href: restaurant.dashboard.data.url(),
+    href: '/restaurants/dashboard',
   },
 ];
 

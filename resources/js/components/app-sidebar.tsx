@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+//import { dashboard } from '@/routes';
 import combos from '@/routes/combos';
 import dishes from '@/routes/dishes';
 import ingredients from '@/routes/ingredients';
@@ -27,19 +27,28 @@ import {
     ShoppingBasket,
 } from 'lucide-react';
 import AppLogo from './app-logo';
+//  import restaurant from '@/routes/restaurant';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+//const { auth } = usePage().props;
+//const userType = auth.user_type;
+
+
+// Luego agregas otros ítems al menú igual o condicionalmente
+
 
 export function AppSidebar() {
     const userType = usePage<SharedData>().props.auth.user.user_type;
 
-    // Agregar ingredientes al menú principal solo para restaurantes
+    const mainNavItems: NavItem[] = [];
+
+        if (userType !== 'customer') {
+        mainNavItems.push({
+            title: 'Dashboard',
+            href: '/restaurants/dashboard',
+            icon: LayoutGrid,
+        });
+        }
+            // Agregar ingredientes al menú principal solo para restaurantes
     const navItems = [...mainNavItems];
     if (userType === 'restaurant') {
         navItems.push({
@@ -80,11 +89,11 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                           <SidebarMenuButton size="lg" asChild>
+                                <Link href={userType === 'restaurant' ? '/restaurants/dashboard' : '/'} prefetch>
                                 <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
+                                </Link>
+                            </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
