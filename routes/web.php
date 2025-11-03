@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -48,6 +49,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	})->name('dashboard');
 	//Route::resource('/customer', CustomerController::class)->names('customer');
 	//Route::resource('/restaurant', RestaurantController::class)->names('restaurant');
+
+	Route::get('checkout', [CheckoutController::class, 'summary'])->name('checkout');
+	Route::get('checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
+	Route::post('checkout/payment', [CheckoutController::class, 'placeOrder'])->name('checkout.payment.store');
+	Route::get('checkout/confirmation', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
 });
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
 	->name('password.request');

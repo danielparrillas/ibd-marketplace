@@ -13,13 +13,17 @@ import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
 import { ChefHat, Clock, LoaderCircle, ShieldCheck } from 'lucide-react';
+import { useCartToken } from '@/hooks/use-cart-token';
 
 interface LoginProps {
     status?: string;
+    notice?: string;
     canResetPassword: boolean;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login({ status, notice, canResetPassword }: LoginProps) {
+    const sessionToken = useCartToken();
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
             <Head title="Iniciar sesión | FoodMarket" />
@@ -84,6 +88,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Ingresa tus credenciales para continuar con tu experiencia FoodMarket.
                             </p>
+                            {notice && (
+                                <div className="rounded-lg border border-orange-200 bg-orange-50 px-4 py-2 text-sm text-orange-700 dark:border-orange-600/60 dark:bg-orange-500/10 dark:text-orange-300">
+                                    {notice}
+                                </div>
+                            )}
                             {status && (
                                 <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700 dark:border-green-700/40 dark:bg-green-500/10 dark:text-green-300">
                                     {status}
@@ -98,6 +107,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             >
                                 {({ processing, errors }) => (
                                     <>
+                                        <input type="hidden" name="session_token" value={sessionToken ?? ''} />
                                         <div className="grid gap-4">
                                             <div className="grid gap-2">
                                                 <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">

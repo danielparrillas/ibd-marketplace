@@ -113,6 +113,25 @@ class CartService
                     ->where('dish_id', $guestItem->dish_id)
                     ->first();
 
+                $guestRestaurantId = $guestItem->restaurant_id;
+
+                if ($existing && $existing->restaurant_id !== $guestRestaurantId) {
+                    $existing->delete();
+                }
+
+                $conflictingForUser = CartItem::query()
+                    ->where('user_id', $userId)
+                    ->where('restaurant_id', '!=', $guestRestaurantId)
+                    ->get();
+
+                if ($conflictingForUser->isNotEmpty()) {
+                    foreach ($conflictingForUser as $conflict) {
+                        $conflict->session_token = $sessionToken;
+                        $conflict->user_id = null;
+                        $conflict->save();
+                    }
+                }
+
                 if ($existing) {
                     $existing->quantity += $guestItem->quantity;
                     $existing->options = $guestItem->options ?? [];

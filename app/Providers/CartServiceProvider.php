@@ -21,7 +21,7 @@ class CartServiceProvider extends ServiceProvider
                 return;
             }
 
-            $sessionToken = $request->cookie('cart_token');
+            $sessionToken = $request->cookie('cart_token') ?? $request->input('session_token');
             $userId = $event->user?->id;
 
             if (!$sessionToken || !$userId) {
@@ -32,7 +32,25 @@ class CartServiceProvider extends ServiceProvider
             Cookie::queue(Cookie::forget('cart_token'));
         };
 
-        Event::listen(Login::class, $migrateCart);
+        Event::listen(Login::class, function ($event) use ($cartService, $migrateCart): void {
+            $migrateCart($event);
+
+            $request = request();
+
+            if (!$request) {
+                return;
+            }
+
+            $sessionToken = $request->cookie('cart_token');
+            $userId = $event->user?->id;
+
+            if (!$sessionToken || !$userId) {
+                return;
+            }
+
+            $cartService->migrateSessionCartToUser($sessionToken, $userId);
+            Cookie::queue(Cookie::forget('cart_token'));
+        });
         Event::listen(Registered::class, $migrateCart);
 
         Event::listen(OrderCreated::class, function (OrderCreated $event) use ($cartService): void {

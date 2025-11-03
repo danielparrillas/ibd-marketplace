@@ -488,7 +488,7 @@ CREATE TABLE invoice_discounts (
     CONSTRAINT fk_invoice_discount_detail FOREIGN KEY (invoice_detail_id) 
         REFERENCES invoice_details(invoice_detail_id)
 );
-
+GO
 --***************SP PARA VENTAS POR PLATILLOS (30 DIAS)*********************
 CREATE PROCEDURE sp_sales_by_dish
     @userId bigint
@@ -529,7 +529,7 @@ BEGIN
       AND oi.combo_id IS NOT NULL
     GROUP BY d2.id, d2.name;
 END
-
+GO
 --*************SP PARA BAJO STOCK*****************
 CREATE PROCEDURE sp_low_inventory
     @userId bigint
@@ -547,7 +547,7 @@ BEGIN
     WHERE restaurant_id = @restaurantId
     ORDER BY current_stock ASC;
 END
-
+GO
 
 --**************SP PARA PEDIDOS EN LOS ULTIMOS 7 DIAS**************
 CREATE PROCEDURE sp_orders_last_7_days
@@ -570,7 +570,7 @@ BEGIN
     ORDER BY order_date;
 END
 
-
+GO
 --**************SP VENTAS TOTALES ULTIMOS 7 DIAS******************
 CREATE PROCEDURE sp_sales_total_last_7_days
     @userId bigint
@@ -592,8 +592,8 @@ BEGIN
     ORDER BY sale_date;
 END
 
-
-*************COMBOS MAS VENDIDOS (30 DIAS)************
+GO
+--*************COMBOS MAS VENDIDOS (30 DIAS)************
 CREATE PROCEDURE sp_top_combos
     @userId bigint
 AS
@@ -616,3 +616,4 @@ BEGIN
     GROUP BY c.id, c.name
     ORDER BY total_quantity DESC;
 END
+GO

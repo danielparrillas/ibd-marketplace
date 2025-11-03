@@ -12,9 +12,11 @@ import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
 import { Building2, LoaderCircle, Sparkles, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+import { useCartToken } from '@/hooks/use-cart-token';
 
 export default function Register() {
     const [userType, setUserType] = useState('');
+    const sessionToken = useCartToken();
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200">
@@ -87,6 +89,7 @@ export default function Register() {
                             >
                                 {({ processing, errors }) => (
                                     <>
+                                        <input type="hidden" name="session_token" value={sessionToken ?? ''} />
                                         <div className="grid gap-4">
                                             <div className="grid gap-2">
                                                 <Label htmlFor="user_type" className="text-sm font-medium text-gray-700 dark:text-gray-200">
