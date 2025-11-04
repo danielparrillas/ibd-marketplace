@@ -30,8 +30,8 @@ export default function AppFooter() {
                         </Link>
                         </li>
                         <li>
-                        <Link href="/cart" className="hover:text-white transition-colors">
-                            Rastrear Pedido
+                        <Link href="/orders" className="hover:text-white transition-colors">
+                            Mis pedidos
                         </Link>
                         </li>
                     </ul>

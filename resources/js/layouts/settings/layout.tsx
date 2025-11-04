@@ -38,6 +38,15 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
       icon: null,
     },
     ...(userType === 'customer'
+      ? [
+          {
+            title: 'Mis pedidos',
+            href: '/orders',
+            icon: null,
+          },
+        ]
+      : []),
+    ...(userType === 'customer'
     ? [
         {
           title: 'Direcciones de entrega',

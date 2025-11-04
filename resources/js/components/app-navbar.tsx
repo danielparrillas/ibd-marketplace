@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 // Asegúrate de que '@/routes' esté correctamente mapeado en tu tsconfig.json
 import { login, register, logout } from '@/routes'; 
 import { type SharedData } from '@/types';
-import { ChefHat, Sun, Moon, LogOut, LayoutDashboard } from "lucide-react";
+import { ChefHat, Sun, Moon, LogOut, LayoutDashboard, ClipboardList } from "lucide-react";
 // Componentes UI (simulando Radix UI)
 import { Button } from "@/components/ui/button";
 
@@ -87,6 +87,27 @@ export default function AppNavbar() {
                             <span className="text-sm font-medium hidden sm:inline-block text-gray-700 dark:text-gray-300">
                                 Hola, {auth.user?.name.split(' ')[0] || 'Usuario'}!
                             </span>
+
+                            <Link href="/orders" className="sm:hidden">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                                    aria-label="Mis pedidos"
+                                >
+                                    <ClipboardList className="h-5 w-5" />
+                                </Button>
+                            </Link>
+
+                            <Link href="/orders">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="hidden text-sm font-semibold text-gray-700 hover:text-gray-900 sm:inline-flex dark:text-gray-200 dark:hover:text-white"
+                                >
+                                    <ClipboardList className="mr-2 h-4 w-4" /> Mis pedidos
+                                </Button>
+                            </Link>
 
                             {/* Botón para Dashboard/Perfil <Link href={dashboard()}>*/}
                             <Link href='/settings/profile'>

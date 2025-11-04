@@ -106,14 +106,14 @@ const formatDateTime = (value?: string | null): string | null => {
             dateStyle: "medium",
             timeStyle: "short",
         }).format(new Date(value));
-    } catch (error) {
+    } catch {
         return value;
     }
 };
 
 export default function CheckoutConfirmationPage() {
     const { props } = usePage<PageProps & { auth?: { user?: { email?: string; name?: string } } }>();
-    const { order, invoice, address, payment_method, items, restaurant, flash } = props;
+    const { order, invoice, address, items, restaurant, flash } = props;
     const customerEmail = props.auth?.user?.email ?? "tu correo registrado";
 
     const placedAt = useMemo(() => formatDateTime(order.created_at), [order.created_at]);
@@ -277,6 +277,14 @@ export default function CheckoutConfirmationPage() {
                             </Card>
 
                             <div className="flex flex-wrap items-center gap-3">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => router.visit("/orders")}
+                                    className="border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                                >
+                                    Mis pedidos
+                                </Button>
                                 <Button
                                     type="button"
                                     onClick={() => router.visit("/restaurants")}

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderTrackingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -54,6 +55,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('checkout/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
 	Route::post('checkout/payment', [CheckoutController::class, 'placeOrder'])->name('checkout.payment.store');
 	Route::get('checkout/confirmation', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+	Route::get('orders', [OrderTrackingController::class, 'index'])->name('orders.index');
+	Route::get('orders/{order}/track', [OrderTrackingController::class, 'show'])->name('orders.track');
 });
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
 	->name('password.request');
