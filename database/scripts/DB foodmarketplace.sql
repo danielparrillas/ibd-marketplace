@@ -489,6 +489,35 @@ CREATE TABLE invoice_discounts (
         REFERENCES invoice_details(invoice_detail_id)
 );
 GO
+
+--*************Tabla Auditoría de Promociones************
+CREATE TABLE dbo.promotions_audit (
+    audit_id      BIGINT IDENTITY(1,1) PRIMARY KEY,
+    operation_type VARCHAR(10) NOT NULL,  -- INSERT | UPDATE | DELETE
+    changed_by     SYSNAME     NOT NULL DEFAULT SUSER_SNAME(),
+    changed_at     DATETIME    NOT NULL DEFAULT GETDATE(),
+
+    -- mismas columnas que promotions:
+    id               BIGINT       NOT NULL,
+    restaurant_id    BIGINT       NOT NULL,
+    name             VARCHAR(255) NOT NULL,
+    description      TEXT         NULL,
+    promotion_type   VARCHAR(20)  NOT NULL,
+    discount_value   DECIMAL(8,2) NOT NULL,
+    min_order_amount DECIMAL(8,2) NULL,
+    max_discount     DECIMAL(8,2) NULL,
+    applies_to       VARCHAR(20)  NOT NULL,
+    target_categories TEXT        NULL,
+    target_dish_ids   TEXT        NULL,
+    valid_from       DATETIME     NOT NULL,
+    valid_until      DATETIME     NOT NULL,
+    is_active        BIT          NOT NULL,
+    usage_limit      INT          NULL,
+    usage_count      INT          NOT NULL,
+    created_at       DATETIME     NOT NULL,
+    updated_at       DATETIME     NOT NULL
+);
+
 --***************SP PARA VENTAS POR PLATILLOS (30 DIAS)*********************
 CREATE PROCEDURE sp_sales_by_dish
     @userId bigint
@@ -615,5 +644,101 @@ BEGIN
       AND o.created_at >= DATEADD(DAY, -30, GETDATE())
     GROUP BY c.id, c.name
     ORDER BY total_quantity DESC;
+END
+GO
+
+--*************Trigger de Auditoria de Promociones************
+
+
+/* 1) Trigger AFTER INSERT: loguea snapshot desde tabla base (p.*) */
+IF OBJECT_ID('dbo.trg_promotions_audit_ins') IS NOT NULL
+    DROP TRIGGER dbo.trg_promotions_audit_ins;
+GO
+CREATE TRIGGER dbo.trg_promotions_audit_ins
+ON dbo.promotions
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.promotions_audit (
+        operation_type, changed_by, changed_at,
+        id, restaurant_id, name, description, promotion_type,
+        discount_value, min_order_amount, max_discount, applies_to,
+        target_categories, target_dish_ids, valid_from, valid_until,
+        is_active, usage_limit, usage_count, created_at, updated_at
+    )
+    SELECT
+        'INSERT', SUSER_SNAME(), GETDATE(),
+        p.id, p.restaurant_id, p.name, p.description, p.promotion_type,
+        p.discount_value, p.min_order_amount, p.max_discount, p.applies_to,
+        p.target_categories, p.target_dish_ids, p.valid_from, p.valid_until,
+        p.is_active, p.usage_limit, p.usage_count, p.created_at, p.updated_at
+    FROM dbo.promotions p
+    INNER JOIN inserted i ON p.id = i.id;  -- solo usamos i.id para unir (no leemos TEXT de inserted)
+END
+GO
+
+/* 2) Trigger AFTER UPDATE: loguea snapshot posterior al UPDATE */
+IF OBJECT_ID('dbo.trg_promotions_audit_upd') IS NOT NULL
+    DROP TRIGGER dbo.trg_promotions_audit_upd;
+GO
+CREATE TRIGGER dbo.trg_promotions_audit_upd
+ON dbo.promotions
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.promotions_audit (
+        operation_type, changed_by, changed_at,
+        id, restaurant_id, name, description, promotion_type,
+        discount_value, min_order_amount, max_discount, applies_to,
+        target_categories, target_dish_ids, valid_from, valid_until,
+        is_active, usage_limit, usage_count, created_at, updated_at
+    )
+    SELECT
+        'UPDATE', SUSER_SNAME(), GETDATE(),
+        p.id, p.restaurant_id, p.name, p.description, p.promotion_type,
+        p.discount_value, p.min_order_amount, p.max_discount, p.applies_to,
+        p.target_categories, p.target_dish_ids, p.valid_from, p.valid_until,
+        p.is_active, p.usage_limit, p.usage_count, p.created_at, p.updated_at
+    FROM dbo.promotions p
+    INNER JOIN inserted i ON p.id = i.id;  -- unimos por id; snapshot sale de la tabla base
+END
+GO
+
+/* 3) Trigger INSTEAD OF DELETE: guarda snapshot previo y luego elimina */
+IF OBJECT_ID('dbo.trg_promotions_audit_del') IS NOT NULL
+    DROP TRIGGER dbo.trg_promotions_audit_del;
+GO
+CREATE TRIGGER dbo.trg_promotions_audit_del
+ON dbo.promotions
+INSTEAD OF DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- snapshot previo desde la tabla base (p.*), usando los ids a borrar
+    INSERT INTO dbo.promotions_audit (
+        operation_type, changed_by, changed_at,
+        id, restaurant_id, name, description, promotion_type,
+        discount_value, min_order_amount, max_discount, applies_to,
+        target_categories, target_dish_ids, valid_from, valid_until,
+        is_active, usage_limit, usage_count, created_at, updated_at
+    )
+    SELECT
+        'DELETE', SUSER_SNAME(), GETDATE(),
+        p.id, p.restaurant_id, p.name, p.description, p.promotion_type,
+        p.discount_value, p.min_order_amount, p.max_discount, p.applies_to,
+        p.target_categories, p.target_dish_ids, p.valid_from, p.valid_until,
+        p.is_active, p.usage_limit, p.usage_count, p.created_at, p.updated_at
+    FROM dbo.promotions p
+    INNER JOIN deleted d ON p.id = d.id;   -- solo usamos d.id para ubicar filas en p
+
+    -- ahora sí, borrar realmente
+    DELETE p
+    FROM dbo.promotions p
+    INNER JOIN deleted d ON p.id = d.id;
 END
 GO
