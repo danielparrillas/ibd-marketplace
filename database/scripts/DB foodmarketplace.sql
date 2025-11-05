@@ -517,7 +517,7 @@ CREATE TABLE dbo.promotions_audit (
     created_at       DATETIME     NOT NULL,
     updated_at       DATETIME     NOT NULL
 );
-
+GO
 --***************SP PARA VENTAS POR PLATILLOS (30 DIAS)*********************
 CREATE PROCEDURE sp_sales_by_dish
     @userId bigint
