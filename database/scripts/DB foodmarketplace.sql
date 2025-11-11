@@ -527,37 +527,47 @@ BEGIN
 
     DECLARE @restaurantId bigint;
     SELECT @restaurantId = id FROM restaurants WHERE user_id = @userId;
+    DECLARE @dateFrom datetime;
+    SET @dateFrom = DATEADD(DAY, -30, GETDATE());
 
+    -- Platos individuales vendidos (NO combos)
     SELECT
       d.id AS dish_id,
       d.name AS dish_name,
       SUM(oi.quantity) AS total_quantity
     FROM order_items oi
-    LEFT JOIN dishes d ON oi.dish_id = d.id
-    JOIN orders o ON oi.order_id = o.id
-    WHERE o.status = 'completed'
+    INNER JOIN dishes d ON oi.dish_id = d.id
+    INNER JOIN orders o ON oi.order_id = o.id
+    WHERE 
+      o.status = 'completed'
       AND o.restaurant_id = @restaurantId
-      AND o.created_at >= DATEADD(DAY, -30, GETDATE())
+      AND d.restaurant_id = @restaurantId -- <<< filtro directo
+      AND o.created_at >= @dateFrom
       AND oi.dish_id IS NOT NULL
     GROUP BY d.id, d.name
 
     UNION ALL
 
+    -- Platos vendidos dentro de combos
     SELECT
       d2.id AS dish_id,
       d2.name AS dish_name,
       SUM(oi.quantity * cd.quantity) AS total_quantity
     FROM order_items oi
-    JOIN combos c ON oi.combo_id = c.id
-    JOIN combo_dishes cd ON c.id = cd.combo_id
-    JOIN dishes d2 ON cd.dish_id = d2.id
-    JOIN orders o ON oi.order_id = o.id
-    WHERE o.status = 'completed'
+    INNER JOIN combos c ON oi.combo_id = c.id
+    INNER JOIN combo_dishes cd ON c.id = cd.combo_id
+    INNER JOIN dishes d2 ON cd.dish_id = d2.id
+    INNER JOIN orders o ON oi.order_id = o.id
+    WHERE 
+      o.status = 'completed'
       AND o.restaurant_id = @restaurantId
-      AND o.created_at >= DATEADD(DAY, -30, GETDATE())
+      AND d2.restaurant_id = @restaurantId -- <<< filtro directo
+      AND o.created_at >= @dateFrom
       AND oi.combo_id IS NOT NULL
     GROUP BY d2.id, d2.name;
 END
+GO
+
 GO
 --*************SP PARA BAJO STOCK*****************
 CREATE PROCEDURE sp_low_inventory
@@ -641,11 +651,13 @@ BEGIN
     JOIN orders o ON oi.order_id = o.id
     WHERE o.status = 'completed'
       AND o.restaurant_id = @restaurantId
+      AND c.restaurant_id = @restaurantId   -- <<< filtro clave
       AND o.created_at >= DATEADD(DAY, -30, GETDATE())
     GROUP BY c.id, c.name
     ORDER BY total_quantity DESC;
 END
 GO
+
 
 --*************Trigger de Auditoria de Promociones************
 
